@@ -1,0 +1,64 @@
+body .user-profile {
+  background: var(--backgroundgrad);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100%;
+
+  .content {
+    margin: auto;
+
+    .card {
+      border: 0;
+
+      a:hover {
+        text-decoration: none;
+        font-weight: 700;
+        text-shadow: 0 0 16px var(--whitetransparent);
+        -webkit-transition: 500ms ease 0.2s;
+        -moz-transition: 500ms ease 0.2s;
+        -o-transition: 500ms ease 0.2s;
+        transition: 500ms ease 0.2s;
+      }
+    }
+
+    @media screen and (max-width: 576px) {
+      .ninety-container {
+        .card {
+          width: 100%;
+        }
+      }
+    }
+
+    .card-header {
+      color: var(--notquitewhite);
+    }
+
+    .free_spot .card-header {
+      background-color: var(--darkerpurple);
+      background: var(--purplegrad);
+    }
+
+    .paid_spot .card-header,
+    .campsite .card-header {
+      background-color: var(--darkerorange);
+      background: var(--orangegrad);
+    }
+
+    .mtb_spot .card-header,
+    .climbing_spot .card-header {
+      background-color: var(--darkergreen);
+      background: var(--greengrad);
+    }
+
+    .surf_spot .card-header,
+    .kayaking_spot .card-header {
+      background-color: var(--darkerblue);
+      background: var(--bluegrad);
+    }
+
+    .bad_spot .card-header {
+      background-color: red;
+      background: var(--redgrad);
+    }
+  }
+}

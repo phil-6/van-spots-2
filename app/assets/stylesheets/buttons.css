@@ -1,0 +1,43 @@
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.btn, .navbar-light, .navbar-light .navbar-header .navbar-brand, h1, h2, h3, h4, h5, h6 {
+    font-family: "Josefin Sans", "Muli", Arial, sans-serif;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+
+    &:hover {
+        background-color: #0069d9;
+        border-color: #0062cc;
+    }
+    &:visited {
+        color: #fff;
+    }
+}
+
+.btn:focus, .btn:hover {
+    text-decoration: none;
+}
+
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}

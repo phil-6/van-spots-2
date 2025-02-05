@@ -1,0 +1,32 @@
+main.unsupported-browser{
+    margin-top: calc(var(--navbar-height) + 1rem);
+    margin-bottom: calc(1rem - var(--navbar-height));
+}
+
+.browser-list {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-block: 1rem;
+}
+
+.browser-list img {
+    aspect-ratio: 1;
+    block-size: auto;
+    inline-size: 7ch;
+    margin-inline: auto;
+}
+
+.browser {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 20%;
+}
+
+.browser .browser-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-block: 0.5rem;
+}

@@ -12,15 +12,7 @@
   <%= csp_meta_tag %>
 
   <title>Van Spots - Wild camping spots for those with Vans</title>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129108408-3"></script>
-  <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'UA-129108408-3');
-  </script>
   <!--Favicon-->
   <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
   <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
@@ -33,16 +25,14 @@
   <script src="https://kit.fontawesome.com/30fa2950fc.js"></script>
 
   <%= javascript_importmap_tags %>
-
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag :all, "data-turbo-track": "reload" %>
 
   <meta name="turbo-refresh-method" content="morph">
   <meta name="turbo-refresh-scroll" content="preserve">
   <meta name="turbo-prefetch" content="true">
 
 </head>
-<body id="overboot">
+<body>
 
 <%= render partial: 'layouts/nav' %>
 <%= yield %>

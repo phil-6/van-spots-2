@@ -1,0 +1,140 @@
+.main-page {
+
+    #news, #about {
+        min-height: 100vh;
+    }
+
+    a {
+        color: var(--brandprimary);
+        text-decoration: none;
+
+        .js-scroll-trigger {
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 80px;
+            background-image: url('purpleabstract.jpg');
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+        }
+
+        :hover {
+            color: var(--ink);
+            transition: .35s;
+        }
+    }
+
+    .bg-orange {
+        background-color: var(--brandsecondary);
+        background: var(--orangegrad);
+        color: var(--notquitewhite);
+
+        a {
+            color: var(--brandprimary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--ink);
+            transition: .35s;
+        }
+    }
+
+    .bg-blue {
+        background-color: var(--blueheadergradstart);
+        background: var(--bluegradhoriz);
+    }
+
+    .bg-green {
+        background-color: var(--greenheadergradstart);
+        background: var(--greengradheader);
+    }
+
+    .main-page-cards {
+        min-height: 100vh;
+
+        .card {
+            min-width: 300px;
+            margin-bottom: 15px;
+            margin-top: 2px;
+
+            a, a:hover {
+                color: inherit;
+            }
+
+            .card-header {
+                h2, h5 {
+                    width: inherit;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                }
+            }
+
+            .card-body {
+                padding: 0.70rem;
+            }
+        }
+
+        .spot-card {
+            .card-header {
+                color: var(--notquitewhite);
+
+                :hover {
+                    color: var(--notquitewhite);
+                }
+
+                a, a:hover {
+                    color: var(--notquitewhite);
+                    text-decoration-color: var(--notquitewhite);
+                }
+            }
+        }
+
+        .free_spot {
+            border-color: var(--darkerpurple);
+
+            .card-header {
+                background-color: var(--darkerpurple);
+                background: var(--purplegrad);
+            }
+        }
+
+        .paid_spot, .campsite {
+            border-color: var(--darkerorange);
+
+            .card-header {
+                background-color: var(--darkerorange);
+                background: var(--orangegrad);
+            }
+        }
+
+        .mtb_spot, .climbing_spot {
+            border-color: var(--darkergreen);
+
+            .card-header {
+                background-color: var(--darkergreen);
+                background: var(--greengrad);
+            }
+        }
+
+        .surf_spot, .kayaking_spot {
+            border-color: var(--darkerblue);
+
+            .card-header {
+                background-color: var(--darkerblue);
+                background: var(--bluegrad);
+            }
+        }
+
+        .bad_spot {
+            border-color: red;
+
+            .card-header {
+                background-color: red;
+                background: var(--redgrad);
+            }
+        }
+    }
+}

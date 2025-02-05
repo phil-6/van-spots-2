@@ -1,16 +1,15 @@
 
 <nav id="mainNav" class="navbar navbar-expand-md fixed-top navbar-light">
   <a class="navbar-brand" href="/">Van Spots</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler hide" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"> </span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item"><a class="nav-link" href="/map">Map</a></li>
       <li class="nav-item"><a class="nav-link" href="/spots">Spot Finder</a></li>
-      <li class="nav-item loading-icon loading-text">Loading</li>
-      <li class="nav-item loading-icon"><i class="far fa-compass fa-2x fa-spin"></i></li>
-
+      <li class="nav-item loading-icon loading-text hide">Loading</li>
+      <li class="nav-item loading-icon hide"><i class="far fa-compass fa-2x fa-spin"></i></li>
     </ul>
     <ul class="nav navbar-nav ml-auto">
       <% if user_signed_in? %>

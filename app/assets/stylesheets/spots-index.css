@@ -1,31 +1,33 @@
-@import "variables";
-#overboot {
+body {
   .filter-buttons {
     margin: auto;
     text-align: center;
     padding-bottom: 10px;
+
     .btn {
-      background-color: $darkerorange;
-      color: $notquitewhite;
+      background-color: var(--darkerorange);
+      color: var(--notquitewhite);
       margin-bottom: 10px;
     }
+
     .btn:hover {
-      background-color: $orange;
+      background-color: var(--orange);
     }
+
     .active {
-      background-color: $purple;
+      background-color: var(--purple);
     }
+
     .active:hover {
-      background-color: $darkerpurple;
+      background-color: var(--darkerpurple);
     }
   }
+
   .filterable {
     display: none;
   }
+
   .show {
-    //border-width: 1px;
-    //margin-bottom: 12px;
-    //height:300px;
     display: inline-block;
   }
 }
