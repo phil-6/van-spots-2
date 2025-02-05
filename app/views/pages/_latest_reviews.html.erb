@@ -1,0 +1,54 @@
+<div class="bg-green" id="reviews">
+  <div class="container main-page-cards text-center">
+    <h1>Latest Reviews</h1>
+    <div class="card-deck">
+      <% @ratings.each do |rating| %>
+
+        <% if rating.review_title? %>
+          <div class="card
+              <% if rating.score < 3 %>border-danger
+              <% elsif rating.score < 6 %>border-warning
+              <% elsif rating.score < 8 %>border-info
+              <% else %>border-success
+              <% end %>">
+
+            <div class="card-header text-center
+                <% if rating.score < 3 %>border-danger alert-danger
+                <% elsif rating.score < 6 %>border-warning alert-warning
+                <% elsif rating.score < 8 %>border-info alert-info
+                <% else %>border-success alert-success
+                <% end %>">
+              <h3> <%= rating.score %>/10</h3>
+              <h5>
+                <% if user_signed_in? %><a href="/spots/<%= rating.spot.id %>">
+                <% end %><%= rating.spot.name %>
+                <% if user_signed_in? %></a>
+                <% end %></h5>
+            </div>
+
+            <div class="card-body">
+              <h4 class="card-title text-center"><%= rating.review_title %></h4>
+              <p class="card-text text-justify"><%= rating.review_body.truncate(170) %></p>
+            </div>
+
+            <div class="card-footer">
+              <small class="text-muted">by <a href="/users/<%= rating.user.id %>"><%= rating.user.username %></a>
+                on <%= rating.created_at.strftime('%b %d, %Y') %></small>
+            </div>
+
+            <%# if current_user.id == rating.user_id%>
+            <!--                      <div class="text-center">-->
+            <%#= button_to "Edit Review", edit_spot_rating_url(@spot, rating), method: :get, class: 'btn btn-primary' %>
+            <!-- TODO add delete option -->
+            <!--                      </div>-->
+            <%# end %>
+          </div>
+        <% end %>
+      <% end %>
+
+    </div>
+    <a class="js-scroll-trigger" href="#how_to"><i class="fas fa-5x fa-chevron-down"></i></a>
+
+
+  </div>
+</div>

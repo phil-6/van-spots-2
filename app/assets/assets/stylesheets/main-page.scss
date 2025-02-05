@@ -1,0 +1,131 @@
+@import "variables";
+
+#news, #about {
+  min-height: 100vh;
+}
+a {
+  color: $brandprimary;
+  text-decoration: none;
+  .js-scroll-trigger {
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 80px;
+    background-image: image-url('purpleabstract.jpg');
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+  }
+  :hover {
+    color: $ink;
+    transition: .35s;
+  }
+}
+.bg-orange {
+  background-color: $brandsecondary;
+  background: $orangegrad;
+  color: $notquitewhite;
+  a {
+    color: $brandprimary;
+    text-decoration: none;
+  }
+  a:hover {
+    color: $ink;
+    transition: .35s;
+  }
+}
+
+.bg-blue{
+  background-color: $blueheadergradstart;
+  background: $bluegradhoriz;
+}
+
+.bg-green {
+  background-color: $greenheadergradstart;
+  background: $greengradheader;
+}
+
+.main-page-cards {
+  min-height: 100vh;
+  .card {
+    min-width: 300px;
+    margin-bottom: 15px;
+    margin-top: 2px;
+    a, a:hover  {
+      color: inherit;
+    }
+    .card-header {
+      h2, h5 {
+        width: inherit;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+    .card-body {
+      padding: 0.70rem;
+    }
+
+  }
+  .spot-card {
+    .card-header {
+      color: $notquitewhite;
+      :hover {
+        color: $notquitewhite;
+      }
+      a, a:hover{
+        color: $notquitewhite;
+        text-decoration-color: $notquitewhite;
+      }
+    }
+
+  }
+  .free_spot{
+    border-color: $darkerpurple ;
+  }
+  .free_spot .card-header {
+    background-color: $darkerpurple;
+    background: $purplegrad;
+  }
+  .paid_spot, .campsite{
+    border-color: $darkerorange;
+  }
+  .paid_spot .card-header {
+    background-color: $darkerorange;
+    background: $orangegrad;
+  }
+  .campsite .card-header {
+    background-color: $darkerorange;
+    background: $orangegrad;
+  }
+  .mtb_spot, .climbing_spot{
+    border-color: $green;
+  }
+  .mtb_spot .card-header {
+    background-color: $green;
+    background: $greengrad;
+  }
+  .climbing_spot .card-header {
+    background-color: $green;
+    background: $greengrad;
+  }
+  .surf_spot, .kayaking_spot {
+    border-color: $darkerblue;
+  }
+  .surf_spot .card-header {
+    background-color: $darkerblue;
+    background: $bluegrad;
+  }
+  .kayaking_spot .card-header {
+    background-color: $darkerblue;
+    background: $bluegrad;
+  }
+  .bad_spot{
+    border-color: red;
+  }
+  .bad_spot .card-header {
+    background-color: red;
+    background: $redgrad;
+  }
+}
+

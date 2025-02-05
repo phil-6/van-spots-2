@@ -1,0 +1,82 @@
+<%= render partial: 'layouts/alerts' %>
+<div class="vs-form">
+  <h2>Edit <em><%= @spot.name %></em></h2>
+
+  <% if @spot.errors.any? %>
+    <div id="error_explanation">
+      <h2>
+        <%= pluralize(@spot.errors.count, "error") %> prohibited
+        this article from being saved:
+      </h2>
+      <ul>
+        <% @spot.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_for @spot, url: {action: "update"} do |spot_form| %>
+    <div class="form-group floating-label">
+      <%= spot_form.text_field :name, class: 'form-control', :required => true, :placeholder => 'What do you call this spot?'  %>
+      <%= spot_form.label :name, 'Spot Name' %>
+    </div>
+
+    <div class="form-group select-div">
+
+      <%= spot_form.select(:spot_type,
+                           options_for_select([['Free Spot', 'free_spot'],
+                                               ['Paid Spot', 'paid_spot'],
+                                               ['Campsite', 'campsite'],
+                                               ['MTB Spot', 'mtb_spot'],
+                                               ['Climbing Spot', 'climbing_spot'],
+                                               ['Kayaking Spot', 'kayaking_spot'],
+                                               ['Surf Spot','surf_spot'],
+                                               ['Bad Spot', 'bad_spot']
+                                              ], @spot.spot_type),
+                           {include_blank: false,
+                            include_hidden: false},
+                           {:class => 'form-control'}) %>
+      <%= spot_form.label :spot_type, 'Spot Type' %>
+    </div>
+    <div class="form-group floating-label">
+      <%= spot_form.text_area :description, class: 'form-control', :required => true, :placeholder => 'Tell us a bit about this spot. Does it have good views? It is free after a certain time? How many spots are there?'  %>
+      <%= spot_form.label :description %>
+    </div>
+
+    <!--    <%#= spot_form.label :location %><br />-->
+    <div class="form-row">
+      <div class="form-group col-sm-6  floating-label">
+        <%= spot_form.text_field :latitude,
+                                 class: 'form-control',
+                                 :required => true,
+                                 :pattern => "^(\\+|-)?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,16})?))$",
+                                 :placeholder => 'Latitude E.g. 51.605411'
+        %>
+        <%= spot_form.label :latitude, ' Location - Latitude' %>
+      </div>
+      <div class="form-group col-sm-6  floating-label">
+
+        <%= spot_form.text_field :longitude,
+                                 class: 'form-control',
+                                 :required => true,
+                                 :pattern => "^(\\+|-)?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,16})?))$",
+                                 :placeholder => 'Longitude E.g. -3.983570'
+        %>
+        <%= spot_form.label :longitude, ' Location - Longitude' %>
+      </div>
+    </div>
+
+    <div class="form-group floating-label">
+      <%= spot_form.url_field :web_link, class: 'form-control', :required => false, :placeholder => 'External link for more information'  %>
+      <%= spot_form.label :web_link, 'External Link' %>
+    </div>
+
+    <div class="actions form-group">
+      <%= link_to "Back", :back, class: 'btn btn-secondary' %>
+      <%= spot_form.submit "Update Spot", class: 'btn btn-primary'  %>
+    </div>
+
+  <% end %>
+
+</div>

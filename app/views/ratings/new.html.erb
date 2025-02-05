@@ -1,0 +1,51 @@
+<%= render partial: 'layouts/alerts' %>
+<!--jquery bar ratings-->
+<script type="text/javascript">
+    $(function() {
+        $('#rating_score').barrating({
+            theme: 'bars-pill',
+            showValues: true,
+            showSelectedRating: false
+        });
+    });
+</script>
+
+<div class="vs-form">
+  <h2>How would you rate:</h2>
+  <h2><%= @spot.name %>?</h2>
+  <div>
+    <%= @spot.description %>
+  </div>
+
+  <br/>
+
+  <%= form_for @rating, url: {action: "create"} do |rating_form| %>
+    <div class="form-group">
+      <%= rating_form.label :score %>
+      <%= rating_form.select(:score,
+                             options_for_select((1..10).step(1),5),
+                             {include_blank: false,
+                              include_hidden: false},
+                             {:class => 'form-control'}) %>
+
+    </div>
+
+    <div class="form-group floating-label">
+      <%= rating_form.text_field :review_title, class: 'form-control', placeholder: 'Review Title (Optional)' %>
+      <%= rating_form.label :review_title %>
+    </div>
+
+    <div class="form-group floating-label">
+      <%= rating_form.text_area :review_body, class: 'form-control', placeholder: 'Review Body (Optional)' %>
+      <%= rating_form.label :review_body %>
+    </div>
+
+    <%= rating_form.hidden_field :spot_id, value: @spot.id %>
+
+    <div class="actions form-group">
+      <%= link_to "Back", :back, class: 'btn btn-secondary' %>
+      <%= rating_form.submit "Rate Spot", class: 'btn btn-primary' %>
+    </div>
+
+  <% end %>
+</div>

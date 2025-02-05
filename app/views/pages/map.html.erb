@@ -1,0 +1,480 @@
+<div id="map" class="map"></div>
+
+<script>
+    var map;
+    //creates a new blank array for all the listing markers
+    var markers = [];
+    var markerCluster;
+    var userPos;
+    var infoWindow;
+
+
+
+
+    function initMap() {
+        // Constructor create a new map, only center and zoom are required.
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 51.600000, lng: -4.150000},
+            zoom: 12,
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+                position: google.maps.ControlPosition.LEFT_BOTTOM
+            },
+            streetViewControl: false,
+            fullscreenControl: false,
+            // fullscreenControlOptions: {
+            //     position: google.maps.ControlPosition.RIGHT_BOTTOM
+            // },
+            scaleControl: true,
+            mapTypeId: 'terrain',
+
+        });
+        /**
+         * Move Street View Address Controls from underneath nav bar.
+         * Control formatting is broken for unknown reason.
+         * Likely due to a bootstrap conflict - street view disabled for now.
+         */
+        /*map.get('streetView').setOptions({
+         addressControlOptions: {
+         position: google.maps.ControlPosition.BOTTOM_CENTER
+         },
+         fullscreenControl: false
+         });*/
+
+        /**
+         ==========
+          Icons
+         ==========
+         */
+
+
+
+        var iconBase = '/assets/map-marker-';
+        var icons = {
+            'free_spot': {
+                icon: iconBase + 'purple.png'
+            },
+            'paid_spot': {
+                icon: iconBase + 'orange.png'
+            },
+            'campsite': {
+                icon: iconBase + 'darker-orange.png'
+            },
+            'mtb_spot': {
+                icon: iconBase + 'darker-green.png'
+            },
+            'climbing_spot': {
+                icon: iconBase + 'green.png'
+            },
+            'kayaking_spot': {
+                icon: iconBase + 'darker-blue.png'
+            },
+            'surf_spot': {
+                icon: iconBase + 'sky-blue.png'
+            },
+            'bad_spot': {
+                icon: iconBase + 'red.png'
+            },
+            'user': {
+                icon: iconBase + 'ink.png'
+            },
+            'new': {
+                icon: iconBase + 'lighter-ink.png'
+            }
+        };
+
+        /**
+         ==========
+         Create Markers
+         ==========
+         */
+            // Create Markers array and populate it from API
+        var apiUrl = ('/api/spots');
+        infoWindow = new google.maps.InfoWindow();
+
+        $.getJSON(apiUrl, function (json1) {
+            $.each(json1, function (key, data) {
+                var position = new google.maps.LatLng(data.latitude, data.longitude);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: position,
+                    id: data.id,
+                    name: data.name,
+                    description: data.description,
+                    average_rating: data.average_rating,
+                    type: data.spot_type,
+                    icon: icons[data.spot_type].icon,
+                    animation: google.maps.Animation.DROP
+                });
+
+
+                // Push the marker to our array of markers.
+                markers.push(marker);
+                markerCluster.addMarker(marker);
+                // Create an onclick event to open an infowindow at each marker.
+                marker.addListener('click', function () {
+                    populateInfoWindow(this, infoWindow);
+                });
+            });
+        });
+
+
+        // Create the DIV to hold the control and call the CenterControl()
+        // constructor
+        // passing in this DIV.
+        var mapFilterControlsDiv = document.createElement('div');
+        var mapFilterControls = new MapFilterControls(mapFilterControlsDiv, map);
+        mapFilterControlsDiv.index = 1;
+//            mapFilterControlsDiv.style['padding-top'] = '10px';
+        map.controls[google.maps.ControlPosition.LEFT_CENTER].push(mapFilterControlsDiv);
+        // Add a marker clusterer to manage the markers.
+        markerCluster = new MarkerClusterer(map, [],
+            {
+                imagePath: '/assets/map-marker-mc',
+                gridSize: 40,
+                minimumClusterSize: 2
+            });
+        /**
+         ==========
+         Show User Location
+         ==========
+         */
+        /** WILL NOT WORK UNTIL CONNECTION IS HTTPS */
+        //User loctation
+         var userInfoWindow = new google.maps.InfoWindow({map: map});
+         // Try HTML5 geolocation.
+         if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                userPos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                userMarker = new google.maps.Marker({
+                    position: userPos,
+                    animation: google.maps.Animation.DROP,
+                    icon: icons['user'].icon,
+                    map: map
+                });
+                userInfoWindow.setContent('<div class="text-center"><strong>You are here.</strong><br />' + userPos.lat + ', ' + userPos.lng + '</div>');
+                userMarker.addListener('click', function(){
+                    userInfoWindow.open(map, userMarker)
+                });
+                map.setCenter(userPos);
+            }, function() {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+        // google.maps.event.addListener( marker, 'click', function ( event ) {
+        //     document.getElementById( "maps_latitude" ).value = event.latLng.lat();
+        //     document.getElementById( "maps_longitude" ).value = event.latLng.lng();
+        // } );
+
+        /**
+         ==========
+         Add Marker on Click
+         ==========
+         */
+
+        var newMarkerInfoWindow = new google.maps.InfoWindow({map: map});
+        var newMarker;
+
+        function placeNewMarker(location){
+            if (newMarker) {
+                newMarker.setPosition(location);
+            } else {
+                newMarker = new google.maps.Marker({
+                    position: location,
+                    icon: icons['new'].icon,
+                    map: map
+                });
+            }
+            var newMarkerInfoWindowContent = '<div id="content">' +
+                '<a href="/spots/new?latitude=' + location.lat() +
+                '&longitude=' + location.lng() + '"><strong> Add Spot Here </strong></a>' +
+                '<br />Lat: ' + location.lat() + ', ' +
+                '<br />Lng: ' + location.lng() + '</div>';
+            newMarkerInfoWindow.setContent(newMarkerInfoWindowContent);
+            newMarkerInfoWindow.open(map, newMarker);
+            newMarker.addListener('click', function(){
+                newMarkerInfoWindow.open(map, newMarker)
+            });
+        }
+
+        google.maps.event.addListener(map, "click", function(event) {
+           placeNewMarker(event.latLng)
+        });
+
+
+
+
+    /**
+    ===============
+    End of Init Map
+    ===============
+    */
+    }
+
+
+
+
+    /*Location Error Handling*/
+    function handleLocationError(browserHasGeolocation, infoWindow, userPos) {
+        infoWindow.setPosition(userPos);
+        infoWindow.setContent(browserHasGeolocation ?
+            'Error: The Geolocation service failed.' :
+            'Error: Your browser doesn\'t support geolocation.');
+    }
+
+    /**
+     ==========
+     Info Windows
+     ==========
+     */
+    /**
+     *  This function populates the infowindow when the marker is clicked. We'll only allow
+     * one infowindow which will open at the marker that is clicked, and populate based
+     * on that markers position.
+     */
+    function populateInfoWindow(marker, infowindow) {
+        // Check to make sure the infowindow is not already opened on this marker.
+        if (infowindow.marker !== marker) {
+            //add information to info window
+            var marker_type;
+            if (marker.type === 'free_spot') {
+                marker_type = 'Free Spot';
+            }else if (marker.type === 'paid_spot') {
+                marker_type = 'Paid Spot';
+            }else if (marker.type === 'campsite') {
+                marker_type = 'Campsite';
+            }else if (marker.type === 'mtb_spot') {
+                marker_type = 'MTB Spot';
+            }else if (marker.type === 'climbing_spot') {
+                marker_type = 'Climbing Spot';
+            }else if (marker.type === 'kayaking_spot') {
+                marker_type = 'Kayaking Spot';
+            }else if (marker.type === 'surf_spot') {
+                marker_type = 'Surf Spot';
+            }else if (marker.type === 'bad_spot') {
+                marker_type = 'Bad Spot';
+            }else{
+                marker_type = 'Unknown Spot Type';
+            }
+            var infoWindowContent = '<div id="content">' +
+                '<h2 id="infoWindowHeading" class="infoWindowHeading">' +
+                '<a href="/spots/' + marker.id + '">' + marker.name + '</a></h2>' +
+                '<div id="infoWindowContent" class="infoWindowContent">' +
+                '<h6>' + marker_type + ' - ' + marker.average_rating + '/10</h6>' +
+                '<p>' + marker.description + '</p>' +
+                '<p><a class="btn btn-sm btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination='
+                + marker.position.lat() + ','
+                + marker.position.lng() +
+                '">Directions</a>' + '    ' +
+                '<a  class="btn btn-sm btn-info" href="/spots/' + marker.id + '">More Info</a>' +
+                ' </p>' +
+                '</div>' +
+                '</div>';
+            infowindow.marker = marker;
+            infowindow.setContent(infoWindowContent);
+            infowindow.open(map, marker);
+            // Make sure the marker property is cleared if the infowindow is closed.
+            infowindow.addListener('closeclick', function () {
+                infowindow.marker = null;
+            });
+        }
+    }
+    /**
+     ==========
+     Filters
+     ==========
+     */
+    /**
+     * These functions control all the map filters.
+     * Any marker property can be used to filter
+     * Require click listeners to work
+     * something else because these are pretty darn important
+     */
+    //          //
+    // SHOW ALL //
+    //          //
+    // This function will loop through the markers array and display them all.
+    function showListings() {
+        var bounds = new google.maps.LatLngBounds();
+        // Extend the boundaries of the map for each marker and display the marker
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+            markerCluster.addMarker(markers[i]);
+            bounds.extend(markers[i].position);
+        }
+        map.fitBounds(bounds);
+        markerCluster.repaint();
+    }
+    //          //
+    // HIDE ALL //
+    //          //
+    // This function will loop through the listings and hide them all.
+    function hideListings() {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+            markerCluster.removeMarker(markers[i]);
+        }
+    }
+    //             //
+    // FILTER TRAD //
+    //             //
+    // This function will loop through the listings and hide them all.
+    // Then redraws all Trad Crags
+    // function filterTrad() {
+    //     //Create new empty boundaries
+    //     var bounds = new google.maps.LatLngBounds();
+    //     //Clear markers from map
+    //     for (var i = 0; i < markers.length; i++) {
+    //         markers[i].setMap(null);
+    //         markerCluster.removeMarker(markers[i]);
+    //     }
+    //     //Redraw filtered markers
+    //     for (var i = 0; i < markers.length; i++) {
+    //         for (var j = 0; j < markers[i].typeOfClimbs.length; j++) {
+    //             //console.log(markers[i].typeOfClimbs[j]);
+    //             if (markers[i].typeOfClimbs[j]['id'] === 1) {
+    //                 markers[i].setMap(map);
+    //                 markerCluster.addMarker(markers[i]);
+    //                 bounds.extend(markers[i].getPosition());
+    //             }
+    //         }
+    //     }
+    //     map.fitBounds(bounds);
+    //     markerCluster.repaint();
+    // }
+    //              //
+    // FILTER SPORT //
+    //              //
+    // This function will loop through the listings and hide them all.
+    // Then redraws all Sport Crags
+    // function filterSport() {
+    //     //Create new empty boundaries
+    //     var bounds = new google.maps.LatLngBounds();
+    //     //Clear markers from map
+    //     for (var i = 0; i < markers.length; i++) {
+    //         markers[i].setMap(null);
+    //         markerCluster.removeMarker(markers[i]);
+    //     }
+    //     //Redraw filtered markers
+    //     for (var i = 0; i < markers.length; i++) {
+    //         for (var j = 0; j < markers[i].typeOfClimbs.length; j++) {
+    //             //console.log(markers[i].typeOfClimbs[j]);
+    //             if (markers[i].typeOfClimbs[j]['id'] === 2) {
+    //                 markers[i].setMap(map);
+    //                 markerCluster.addMarker(markers[i]);
+    //                 bounds.extend(markers[i].getPosition());
+    //             }
+    //         }
+    //     }
+    //     //Zoom the map to show remaining markers
+    //     map.fitBounds(bounds);
+    //     //Repaint any marker clustering.
+    //     markerCluster.repaint();
+    // }
+
+    /**
+     ==========
+     Filter Buttons
+     ==========
+     */
+    /**
+     * Adds controls for map filters
+     * Each control has a border, an interior and an event listener
+     * the rest should be obvious
+     */
+    function MapFilterControls(controlDiv, map, center) {
+        //          //
+        // SHOW ALL //
+        //          //
+        // Set CSS for the SHOW ALL control border
+        var showAllUI = document.createElement('div');
+        showAllUI.id = 'showAllUI';
+        showAllUI.title = 'Show all listings';
+        controlDiv.appendChild(showAllUI);
+        // Set CSS for the SHOW ALL control interior
+        var showAllText = document.createElement('div');
+        showAllText.id = 'showAllText';
+        showAllText.innerHTML = 'Show All';
+        showAllUI.appendChild(showAllText);
+        //          //
+        // HIDE ALL //
+        //          //
+        // Set CSS for the HIDE ALL control border
+        var hideAllUI = document.createElement('div');
+        hideAllUI.id = 'hideAllUI';
+        hideAllUI.title = 'Hide all listings';
+        controlDiv.appendChild(hideAllUI);
+        // Set CSS for the HIDE ALL interior
+        var hideAllText = document.createElement('div');
+        hideAllText.id = 'hideAllText';
+        hideAllText.innerHTML = 'Hide All';
+        hideAllUI.appendChild(hideAllText);
+        //             //
+        // FILTER TRAD //
+        //             //
+        // Set CSS for the FILTER TRAD control border
+        // var filterTradUI = document.createElement('div');
+        // filterTradUI.id = 'filterTradUI';
+        // filterTradUI.title = 'Show Crags with Trad Routes';
+        // controlDiv.appendChild(filterTradUI);
+        // // Set CSS for the FILTER TRAD interior
+        // var filterTradText = document.createElement('div');
+        // filterTradText.id = 'filterTradText';
+        // filterTradText.innerHTML = 'Show Trad';
+        // filterTradUI.appendChild(filterTradText);
+        //              //
+        // FILTER SPORT //
+        //              //
+        // Set CSS for the FILTER SPORT control border
+        // var filterSportUI = document.createElement('div');
+        // filterSportUI.id = 'filterSportUI';
+        // filterSportUI.title = 'Show Crags with Sport Routes';
+        // controlDiv.appendChild(filterSportUI);
+        // // Set CSS for the FILTER SPORT interior
+        // var filterSportText = document.createElement('div');
+        // filterSportText.id = 'filterSportText';
+        // filterSportText.innerHTML = 'Show Sport';
+        // filterSportUI.appendChild(filterSportText);
+
+        showAllUI.addEventListener('click', showListings);
+        hideAllUI.addEventListener('click', hideListings);
+        // filterTradUI.addEventListener('click', filterTrad);
+        // filterSportUI.addEventListener('click', filterSport);
+    }
+    $(".controlDiv").on('click', 'div', function (e) {
+        $(this).parent().find('div.active').removeClass('active');
+        $(this).addClass('active');
+    });
+
+    /**
+     ==========
+     Get Location
+     ==========
+     */
+
+
+</script>
+
+
+
+
+
+<!--Marker Clusterer-->
+<!--<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>-->
+<!--<script src="/assets/markerClusterer/markerclusterer.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js"></script>-->
+
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['MAPS_API_KEY'] %>&callback=initMap">
+</script>
+
+
+<!-- Plugin JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>

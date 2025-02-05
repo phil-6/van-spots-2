@@ -1,0 +1,31 @@
+@import "variables";
+#overboot {
+  .filter-buttons {
+    margin: auto;
+    text-align: center;
+    padding-bottom: 10px;
+    .btn {
+      background-color: $darkerorange;
+      color: $notquitewhite;
+      margin-bottom: 10px;
+    }
+    .btn:hover {
+      background-color: $orange;
+    }
+    .active {
+      background-color: $purple;
+    }
+    .active:hover {
+      background-color: $darkerpurple;
+    }
+  }
+  .filterable {
+    display: none;
+  }
+  .show {
+    //border-width: 1px;
+    //margin-bottom: 12px;
+    //height:300px;
+    display: inline-block;
+  }
+}

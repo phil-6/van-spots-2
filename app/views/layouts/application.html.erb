@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="google-site-verification" content="0NaQmSKddzawMAsln6Felz63N2r9bkTpG3s3-pHh5o0" />
+  <meta name="description" content="Quickly and easily find the best spots to camp in your van overnight. If you're living the #vanlife or just wanting to escape for a night van-camping. Save your favourite spots and easily find your way back.">
+  <meta name="author" content="Phil Reynolds">
+  <meta name="theme-color" content="#663399">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <title>Van Spots - Wild camping spots for those with Vans</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129108408-3"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-129108408-3');
+  </script>
+  <!--Favicon-->
+  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+
+  <!--  Custom Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Muli|Josefin+Sans:400,600,700|Roboto" rel="stylesheet">
+
+  <!--  Font Awesome-->
+  <script src="https://kit.fontawesome.com/30fa2950fc.js"></script>
+
+  <%= javascript_importmap_tags %>
+
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+
+  <meta name="turbo-refresh-method" content="morph">
+  <meta name="turbo-refresh-scroll" content="preserve">
+  <meta name="turbo-prefetch" content="true">
+
+</head>
+<body id="overboot">
+
+<%= render partial: 'layouts/nav' %>
+<%= yield %>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<div class="table-index">
+  <div class="content">
+    <div class="content-header">
+      <h1>Users</h1>
+      <%= button_to "Log Out All Users", sign_out_all_action_path, method: :post, class: 'btn btn-sm btn-secondary' %>
+      <hr />
+    </div>
+
+    <div id="spot-table" class="table-responsive">
+        <table class="table table-dark table-hover table-sm">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Email</th>
+              <th scope="col">Username</th>
+              <th scope="col">Description</th>
+              <th scope="col">Created At</th>
+              <th scope="col">Deleted At</th>
+              <th scope="col">Admin</th>
+              <th scope="col">Sign Ins</th>
+              <th scope="col">Current Sign In</th>
+              <th scope="col">Spots</th>
+              <th scope="col">Ratings</th>
+              <th scope="col"><i class="far fa-eye"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% User.all.order(:id).each do |user| %>
+              <tr>
+                <th scope="row"><a href="/users/<%= user.id %>"><%= user.id %></a></th>
+                <td><a href="mailto:<%= user.email %>"><i class="fas fa-envelope"></i></a></td>
+                <td><%= user.username %></td>
+                <td class="limit-width"><%= user.description.truncate(80) %></td>
+                <td>
+                  <% if user.created_at? %>
+                    <%= user.created_at.strftime('%b %d, %Y') %>
+                  <% end %>
+                </td>
+                <td>
+                  <% if user.deleted_at? %>
+                    <%= user.deleted_at.strftime('%b %d, %Y') %>
+                  <% end %>
+                </td>
+                <td><%= user.admin %></td>
+                <td><%= user.sign_in_count %></td>
+                <td>
+                  <% if user.current_sign_in_at? %>
+                    <%= user.current_sign_in_at.strftime('%b %d, %Y') %>
+                  <% end %>
+                </td>
+                <td><%= Spot.where(user_id: user.id).size %></td>
+                <td><%= Rating.where(user_id: user.id).size %></td>
+                <td><a href="/users/<%= user.id %>"><i class="far fa-eye"></i></a></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+     </div> <!-- #spot-table -->
+
+
+  </div>
+</div>

@@ -1,0 +1,81 @@
+@import "../variables";
+
+.br-theme-bars-pill {
+
+  .br-widget {
+    white-space: nowrap;
+
+    a {
+      padding: 7px 12px;
+      background-color: lighten($brandsecondary, 25%);
+      color: $brandsecondary;
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 3;
+      text-align: center;
+      font-weight: 400;
+
+      &.br-active,
+      &.br-selected {
+        background-color: $brandsecondary;
+        color: white;
+      }
+    }
+  }
+
+  .br-readonly {
+    a {
+      cursor: default;
+
+      &.br-active, &.br-selected {
+        background-color: lighten($brandsecondary, 10%);
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 412px) {
+  .br-theme-bars-pill {
+    .br-widget {
+      a {
+        padding: 6px 6px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 270px) {
+  .br-theme-bars-pill {
+    .br-widget {
+      a {
+        padding: 6px 2px;
+      }
+    }
+  }
+}
+
+@media print {
+  .br-theme-bars-pill {
+
+    .br-widget {
+      a {
+        border: 1px solid lighten(black, 70%);
+        border-left: none;
+        background: white;
+        box-sizing: border-box;
+
+        &.br-active,
+        &.br-selected {
+          border: 1px solid black;
+          border-left: none;
+          background: white;
+          color: black;
+        }
+      }
+
+      a:first-child {
+        border-left: 1px solid black;
+      }
+    }
+  }
+}

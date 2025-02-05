@@ -1,0 +1,31 @@
+<header>
+  <%= render partial: 'layouts/alerts' %>
+  <div class="home-content">
+    <div class="home-content-inner">
+      <div id="homeHeading">
+        <h1> <span class="headingBrandVan">Van</span> <span class="headingBrandSpots">Spots</span> </h1>
+      </div>
+
+      <hr>
+      <h2>
+        <strong>
+          Wild camping spots for those with Vans
+          <br />
+          Now in Beta
+        </strong>
+      </h2>
+      <hr>
+      <a href="#about" class="btn btn-primary js-scroll-trigger">About</a>
+      <a href="#news" class="btn btn-primary js-scroll-trigger">Latest Updates</a>
+      <a href="#how_to" class="btn btn-primary js-scroll-trigger">How To</a>
+      <hr>
+
+    </div>
+  </div>
+</header>
+
+<%= render partial: 'about' %>
+<%= render partial: 'latest_updates' %>
+<%= render partial: 'latest_spots' %>
+<%= render partial: 'latest_reviews'  %>
+<%= render partial: 'how_to' %>

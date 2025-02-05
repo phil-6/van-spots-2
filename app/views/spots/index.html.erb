@@ -1,0 +1,85 @@
+<div class="table-index">
+  <div class="content">
+    <div class="content-header">
+      <h1> <span class="headingBrandVan">Van</span> <span class="headingBrandSpots">Spots</span> </h1>
+      <% if user_signed_in? %>
+        <%= link_to "Create Spot", new_spot_path, class: 'btn btn-sm btn-primary' %>
+      <% end %>
+      <hr />
+    </div>
+
+    <div class="filter-buttons" id="type-filters">
+      <button class="btn btn-sm active" onclick="filterByType('all')">Show All</button>
+      <button class="btn btn-sm" onclick="filterByType('free_spot')">Free Spots</button>
+      <button class="btn btn-sm" onclick="filterByType('paid_spot')">Paid Spots</button>
+      <button class="btn btn-sm" onclick="filterByType('mtb_spot')">MTB Spots</button>
+      <button class="btn btn-sm" onclick="filterByType('climbing_spot')">Climbing Spots</button>
+      <button class="btn btn-sm" onclick="filterByType('kayaking_spot')">Kayaking Spots</button>
+      <button class="btn btn-sm" onclick="filterByType('surf_spot')">Surf Spots</button>
+      <button class="btn btn-sm" onclick="filterByType('bad_spot')">Bad Spots</button>
+    </div>
+    <div class="filter-buttons" id="rating-filters">
+      <button class="btn btn-sm active" onclick="filterByRating('all')">All</button>
+      <button class="btn btn-sm" onclick="filterByRating('5')">>5/10</button>
+      <button class="btn btn-sm" onclick="filterByRating('6')">>6/10</button>
+      <button class="btn btn-sm" onclick="filterByRating('7')">>7/10</button>
+      <button class="btn btn-sm" onclick="filterByRating('8')">>8/10</button>
+      <button class="btn btn-sm" onclick="filterByRating('9')">>9/10</button>
+    </div>
+
+    <% unless user_signed_in? %>
+      <div class="col-xl-4 col-lg-5 col-md-6 col-sm-7 mx-auto text-center sign-in-error alert alert-danger"><a href="users/sign_in" class="alert-link">Login</a> or <a href="users/sign_up" class="alert-link">Sign up</a> to see detail about each spot.</div>
+    <% end %>
+      <div id="spot-table" class="table-responsive">
+        <div class="text-center loading-icon"><h3>Loading</h3><i class="far fa-compass fa-2x fa-spin"></i></div>
+        <table class="table table-dark table-hover table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Type</th>
+              <th scope="col">Rating</th>
+              <th scope="col"></th>
+              <th scope="col">Description</th>
+              <th scope="col">Created By</th>
+              <th scope="col">Created At</th>
+              <th scope="col">Last Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @spots.find_each do |spot| %>
+            <%# I apologise sincerely for anyone else who has to read the following line of code%>
+              <tr class="filterable <%= spot.spot_type %> rating-<%= spot.average_rating.floor %> <% if user_signed_in? %>clickable" onclick="window.location='/spots/<%= spot.id %>';<% end %>">
+                <td><%= spot.name %></td>
+                <td><% if spot.spot_type == 'free_spot' %>Free Spot
+                  <% elsif spot.spot_type == 'paid_spot' %>Paid Spot
+                  <% elsif spot.spot_type == 'campsite' %>Campsite
+                  <% elsif spot.spot_type == 'mtb_spot' %>MTB Spot
+                  <% elsif spot.spot_type == 'climbing_spot' %>Climbing Spot
+                  <% elsif spot.spot_type == 'kayaking_spot' %>Kayaking Spot
+                  <% elsif spot.spot_type == 'surf_spot' %>Surf Spot
+                  <% elsif spot.spot_type == 'bad_spot' %>Bad Spot
+                  <% else %>Spot Type Unknown<% end %></td>
+                <td><%= spot.average_rating %>/10</td>
+                <td>from <%= spot.ratings.size %> scores</td>
+                <td><%= spot.description.truncate(60) %></td>
+                <td><%= spot.user.username %></td>
+                <td><%= spot.created_at.strftime('%b %d, %Y') %></td>
+                <td><%= spot.updated_at.strftime('%b %d, %Y') %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+     </div> <!-- #spot-table -->
+    <div id="no-spots-error" class="no-spots-error alert alert-danger text-center">
+      <h3> Sorry, no spots found. Try browsing the <a href="/map" class="alert-link">map</a></h3>
+    </div>
+
+  </div>
+</div>
+
+<script>
+    $( document ).on('turbolinks:load', function() {
+        filterByRating('all');
+        filterByType('all');
+    });
+</script>
