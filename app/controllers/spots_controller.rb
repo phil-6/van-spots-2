@@ -11,6 +11,7 @@ class SpotsController < ApplicationController
       else
         Spot.includes(:user, :ratings).all.sort_by(&:average_rating).reverse
       end
+    # debugger
   end
 
   # GET /api/spots
