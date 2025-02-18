@@ -1,5 +1,5 @@
 <div class="table-index">
-  <div class="content">
+  <div class="content" data-controller="card-filter">
     <div class="content-header">
       <h1> <span class="headingBrandVan">Van</span> <span class="headingBrandSpots">Spots</span> </h1>
       <% if user_signed_in? %>
@@ -9,28 +9,28 @@
     </div>
 
     <div class="filter-buttons" id="type-filters">
-      <button class="btn btn-sm active" onclick="filterByType('all')">Show All</button>
-      <button class="btn btn-sm" onclick="filterByType('free_spot')">Free Spots</button>
-      <button class="btn btn-sm" onclick="filterByType('paid_spot')">Paid Spots</button>
-      <button class="btn btn-sm" onclick="filterByType('mtb_spot')">MTB Spots</button>
-      <button class="btn btn-sm" onclick="filterByType('climbing_spot')">Climbing Spots</button>
-      <button class="btn btn-sm" onclick="filterByType('kayaking_spot')">Kayaking Spots</button>
-      <button class="btn btn-sm" onclick="filterByType('surf_spot')">Surf Spots</button>
-      <button class="btn btn-sm" onclick="filterByType('bad_spot')">Bad Spots</button>
+      <button class="btn btn-sm active" data-action="click->card-filter#filterByType" data-spot-type="all">Show All</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByType" data-spot-type="free_spot">Free Spots</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByType" data-spot-type="paid_spot">Paid Spots</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByType" data-spot-type="mtb_spot">MTB Spots</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByType" data-spot-type="climbing_spot">Climbing Spots</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByType" data-spot-type="kayaking_spot">Kayaking Spots</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByType" data-spot-type="surf_spot">Surf Spots</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByType" data-spot-type="bad_spot">Bad Spots</button>
     </div>
     <div class="filter-buttons" id="rating-filters">
-      <button class="btn btn-sm active" onclick="filterByRating('all')">All</button>
-      <button class="btn btn-sm" onclick="filterByRating('5')">>5/10</button>
-      <button class="btn btn-sm" onclick="filterByRating('6')">>6/10</button>
-      <button class="btn btn-sm" onclick="filterByRating('7')">>7/10</button>
-      <button class="btn btn-sm" onclick="filterByRating('8')">>8/10</button>
-      <button class="btn btn-sm" onclick="filterByRating('9')">>9/10</button>
+      <button class="btn btn-sm active" data-action="click->card-filter#filterByRating" data-rating="all">All</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByRating" data-rating="5">>5/10</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByRating" data-rating="6">>6/10</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByRating" data-rating="7">>7/10</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByRating" data-rating="8">>8/10</button>
+      <button class="btn btn-sm" data-action="click->card-filter#filterByRating" data-rating="9">>9/10</button>
     </div>
 
     <% unless user_signed_in? %>
       <div class="col-xl-4 col-lg-5 col-md-6 col-sm-7 mx-auto text-center sign-in-error alert alert-danger"><a href="users/sign_in" class="alert-link">Login</a> or <a href="users/sign_up" class="alert-link">Sign up</a> to see detail about each spot.</div>
     <% end %>
-      <div id="spot-table" class="table-responsive">
+      <div id="spot-table" data-card-filter-target="spotTable" class="table-responsive">
         <div class="text-center loading-icon"><h3>Loading</h3><i class="far fa-compass fa-2x fa-spin"></i></div>
         <table class="table table-dark table-hover table-sm">
           <thead>
@@ -46,9 +46,9 @@
             </tr>
           </thead>
           <tbody>
-            <% @spots.find_each do |spot| %>
+            <% @spots.each do |spot| %>
             <%# I apologise sincerely for anyone else who has to read the following line of code%>
-              <tr class="filterable <%= spot.spot_type %> rating-<%= spot.average_rating.floor %> <% if user_signed_in? %>clickable" onclick="window.location='/spots/<%= spot.id %>';<% end %>">
+              <tr class="filterable <%= spot.spot_type %> rating-<%= spot.average_rating.floor %><% if user_signed_in? %>clickable" onclick="window.location='/spots/<%= spot.id %>';<% end %>">
                 <td><%= spot.name %></td>
                 <td><% if spot.spot_type == 'free_spot' %>Free Spot
                   <% elsif spot.spot_type == 'paid_spot' %>Paid Spot
@@ -70,16 +70,9 @@
           </tbody>
         </table>
      </div> <!-- #spot-table -->
-    <div id="no-spots-error" class="no-spots-error alert alert-danger text-center">
+    <div id="no-spots-error" data-card-filter-target="noSpotsError" class="no-spots-error alert alert-danger text-center">
       <h3> Sorry, no spots found. Try browsing the <a href="/map" class="alert-link">map</a></h3>
     </div>
 
   </div>
 </div>
-
-<script>
-    $( document ).on('turbolinks:load', function() {
-        filterByRating('all');
-        filterByType('all');
-    });
-</script>
