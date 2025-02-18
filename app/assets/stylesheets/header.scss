@@ -1,7 +1,4 @@
-@import "variables";
-
-#overboot {
-
+body {
   header::before {
     /*min-height: auto;*/
     -webkit-background-size: cover;
@@ -16,10 +13,7 @@
     -o-filter: blur(5px);
     -ms-filter: blur(5px);
     filter: blur(5px);
-
-    //color: $notquitewhite;
-
-    content: ' ';
+    content: '';
     display: block;
     position: absolute;
     left: 0;

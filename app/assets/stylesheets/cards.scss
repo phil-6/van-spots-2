@@ -1,0 +1,112 @@
+
+.main-page-cards {
+  .card-deck {
+    display: flex;
+    flex-flow: row wrap;
+    margin: auto;
+    max-width: 1000px;
+
+    .card {
+      width: 320px;
+      margin: 2px auto 15px;
+
+      a, a:hover {
+        color: inherit;
+      }
+
+      .card-header {
+        h2, h5 {
+          width: inherit;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+
+      .card-body {
+        height: 180px;
+        padding: 0.70rem;
+        flex: 1 1 auto;
+        text-overflow: ellipsis;
+        overflow: auto;
+      }
+    }
+  }
+}
+
+.card {
+  &.spot-card {
+    .card-header {
+      color: $notquitewhite;
+
+      :hover {
+        color: $notquitewhite;
+      }
+
+      a, a:hover {
+        color: $notquitewhite;
+        text-decoration-color: $notquitewhite;
+      }
+    }
+
+    &.free_spot {
+      border-color: $darkerpurple;
+    }
+
+    &.free_spot .card-header {
+      background-color: $darkerpurple;
+      background: $purplegrad;
+    }
+
+    &.paid_spot, .campsite {
+      border-color: $darkerorange;
+    }
+
+    &.paid_spot .card-header {
+      background-color: $darkerorange;
+      background: $orangegrad;
+    }
+
+    &.campsite .card-header {
+      background-color: $darkerorange;
+      background: $orangegrad;
+    }
+
+    &.mtb_spot, .climbing_spot {
+      border-color: $green;
+    }
+
+    &.mtb_spot .card-header {
+      background-color: $green;
+      background: $greengrad;
+    }
+
+    &.climbing_spot .card-header {
+      background-color: $green;
+      background: $greengrad;
+    }
+
+    &.surf_spot, .kayaking_spot {
+      border-color: $darkerblue;
+    }
+
+    &.surf_spot .card-header {
+      background-color: $darkerblue;
+      background: $bluegrad;
+    }
+
+    &.kayaking_spot .card-header {
+      background-color: $darkerblue;
+      background: $bluegrad;
+    }
+
+    &.bad_spot {
+      border-color: red;
+    }
+
+    &.bad_spot .card-header {
+      background-color: red;
+      background: $redgrad;
+    }
+  }
+}

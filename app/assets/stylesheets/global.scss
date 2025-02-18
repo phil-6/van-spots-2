@@ -18,6 +18,7 @@ hr {
   border-color: $brandsecondary;
   border-width: 3px;
   max-width: 50px;
+  margin: 1rem auto;
 }
 
 #overboot {
@@ -33,21 +34,14 @@ h1{
   margin-top: 0;
   margin-bottom: 0;
   font-size: 75px;
-  background-image: image-url('purpleabstract.jpg');
+  background-image: url('purpleabstract.jpg');
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
 }
 
-
-.loading-icon{
-
-}
 .hide {
   display: none;
 }
 .show {
   display: block;
 }
-
-
-

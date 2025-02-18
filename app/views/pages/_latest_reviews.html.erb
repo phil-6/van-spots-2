@@ -13,10 +13,10 @@
               <% end %>">
 
             <div class="card-header text-center
-                <% if rating.score < 3 %>border-danger alert-danger
-                <% elsif rating.score < 6 %>border-warning alert-warning
-                <% elsif rating.score < 8 %>border-info alert-info
-                <% else %>border-success alert-success
+                <% if rating.score < 3 %>border-danger bg-danger-subtle
+                <% elsif rating.score < 6 %>border-warning bg-warning-subtle
+                <% elsif rating.score < 8 %>border-info bg-info-subtle
+                <% else %>border-success bg-success-subtle
                 <% end %>">
               <h3> <%= rating.score %>/10</h3>
               <h5>
@@ -48,7 +48,5 @@
 
     </div>
     <a class="js-scroll-trigger" href="#how_to"><i class="fas fa-5x fa-chevron-down"></i></a>
-
-
   </div>
 </div>
