@@ -31,7 +31,7 @@
       <div class="col-xl-4 col-lg-5 col-md-6 col-sm-7 mx-auto text-center sign-in-error alert alert-danger"><a href="users/sign_in" class="alert-link">Login</a> or <a href="users/sign_up" class="alert-link">Sign up</a> to see detail about each spot.</div>
     <% end %>
       <div id="spot-table" data-card-filter-target="spotTable" class="table-responsive">
-        <div class="text-center loading-icon"><h3>Loading</h3><i class="far fa-compass fa-2x fa-spin"></i></div>
+        <div class="text-center loading-icon" data-card-filter-target="loadingIcon"><h3>Loading</h3><i class="far fa-compass fa-2x fa-spin"></i></div>
         <table class="table table-dark table-hover table-sm">
           <thead>
             <tr>
@@ -48,8 +48,13 @@
           <tbody>
             <% @spots.each do |spot| %>
             <%# I apologise sincerely for anyone else who has to read the following line of code%>
-              <tr class="filterable <%= spot.spot_type %> rating-<%= spot.average_rating.floor %><% if user_signed_in? %>clickable" onclick="window.location='/spots/<%= spot.id %>';<% end %>">
+              <tr class="<%= spot.spot_type %> rating-<%= spot.average_rating.floor %> hide
+              <% if user_signed_in? %>clickable" onclick="window.location='/spots/<%= spot.id %>';<% end %>"
+                data-rating="<%= spot.average_rating.floor %>"
+                data-card-filter-target="filterable">
+
                 <td><%= spot.name %></td>
+                <%# TODO: Use .humanize here %>
                 <td><% if spot.spot_type == 'free_spot' %>Free Spot
                   <% elsif spot.spot_type == 'paid_spot' %>Paid Spot
                   <% elsif spot.spot_type == 'campsite' %>Campsite

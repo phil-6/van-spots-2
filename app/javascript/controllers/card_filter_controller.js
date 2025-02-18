@@ -1,11 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    static targets = ["spotTable", "noSpotsError", "filterable"];
+    static targets = ["spotTable", "noSpotsError", "filterable", "loadingIcon"];
 
     initialize() {
         this.filterByRating({ target: { dataset: { rating: 'all' } } });
         this.filterByType({ target: { dataset: { spotType: 'all' } } });
+        this.loadingIconTarget.classList.add("hide");
         console.log("Spot filter initialized");
     }
 
@@ -20,11 +21,12 @@ export default class extends Controller {
     }
 
     filterByType(event) {
+        console.log("Filtering by type: ", event.target.dataset.spotType);
         this.changeActiveButton("spot_type");
         const spotType = event.target.dataset.spotType || "";
         this.filterableTargets.forEach(card => {
             card.classList.remove("show");
-            if (card.className.indexOf(spotType) > -1) {
+            if (spotType === "all" || card.classList.contains(spotType)) {
                 card.classList.add("show");
             }
         });
@@ -32,6 +34,7 @@ export default class extends Controller {
     }
 
     filterByRating(event) {
+        console.log("Filtering by rating: ", event.target.dataset.rating);
         this.changeActiveButton("rating");
         const rating = event.target.dataset.rating || "all";
         this.filterableTargets.forEach(card => {

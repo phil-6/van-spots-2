@@ -5,13 +5,13 @@ class SpotsController < ApplicationController
 
   # GET /spots
   def index
+    # TODO: Add Pagination
     @spots =
       if params[:spot_type]
         Spot.where(spot_type: params[:spot_type])
       else
         Spot.includes(:user, :ratings).all.sort_by(&:average_rating).reverse
       end
-    # debugger
   end
 
   # GET /api/spots
