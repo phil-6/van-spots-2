@@ -1,5 +1,8 @@
 <div id="map" class="map"></div>
 
+<!-- Marker Clusterer -->
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+
 <script>
     var map;
     var markers = [];
@@ -24,7 +27,6 @@
         var iconBase = '/assets/map-marker-';
         var icons = {
             'free_spot': { icon: iconBase + 'purple.png' },
-            'paid_spot': { icon: iconBase + 'orange.png' },
             'campsite': { icon: iconBase + 'darker-orange.png' },
             'mtb_spot': { icon: iconBase + 'darker-green.png' },
             'kayaking_spot': { icon: iconBase + 'darker-blue.png' },
@@ -35,8 +37,6 @@
         };
 
         var apiUrl = '/api/spots';
-        infoWindow = new google.maps.InfoWindow();
-
         fetch(apiUrl)
           .then(response => response.json())
           .then(data => {
@@ -232,16 +232,6 @@
     });
 </script>
 
-
-
-
-
-<!--Marker Clusterer-->
-<!--<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>-->
-<!--<script src="/assets/markerClusterer/markerclusterer.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js"></script>-->
-
-
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['MAPS_API_KEY'] %>&callback=initMap">
 </script>
@@ -249,3 +239,7 @@
 
 <!-- Plugin JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
