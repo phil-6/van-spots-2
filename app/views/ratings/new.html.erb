@@ -1,16 +1,16 @@
 <%= render partial: 'layouts/alerts' %>
 <!--jquery bar ratings-->
-<script type="text/javascript">
-    $(function() {
-        $('#rating_score').barrating({
-            theme: 'bars-pill',
-            showValues: true,
-            showSelectedRating: false
-        });
-    });
-</script>
+<!--<script type="text/javascript">-->
+<!--    $(function() {-->
+<!--        $('#rating_score').barrating({-->
+<!--            theme: 'bars-pill',-->
+<!--            showValues: true,-->
+<!--            showSelectedRating: false-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 
-<div class="vs-form">
+<div class="vs-form" data-controller="bar-rating" data-bar-rating-show-values="true" data-bar-rating-show-selected-rating="false">
   <h2>How would you rate:</h2>
   <h2><%= @spot.name %>?</h2>
   <div>
@@ -26,7 +26,7 @@
                              options_for_select((1..10).step(1),5),
                              {include_blank: false,
                               include_hidden: false},
-                             {:class => 'form-control'}) %>
+                             {class: 'form-control', data: {bar_rating_target: 'select'}}) %>
 
     </div>
 
