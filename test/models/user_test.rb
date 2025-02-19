@@ -16,13 +16,13 @@ class UserTest < ActiveSupport::TestCase
   test "should not be able to create a username with someone else's username" do
     user = User.new(username: "test-one", email: "test2@example.com", description: "test", password: "password")
     assert_not user.save
-    assert_includes user.errors[:username], "is invalid"
+    assert_includes user.errors[:username], "has already been taken"
   end
 
   test "should not be able to create a username that is someone else's email" do
     user = User.new(username: "test@example.com", email: "test2@example.com", description: "test", password: "password")
     assert_not user.save
-    assert_includes user.errors[:username], "is invalid"
+    assert_includes user.errors[:username], "only allows letters, numbers, underscores, and dots"
   end
 
   test "should be able to create a user with a unique username" do
