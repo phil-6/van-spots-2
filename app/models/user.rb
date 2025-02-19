@@ -51,6 +51,6 @@ class User < ApplicationRecord
                         :description
   validates :email, uniqueness: { case_sensitive: false }
   validates :username, uniqueness: { case_sensitive: false }
-  validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, multiline: true
+  validates :username, format: { with: /\A[a-zA-Z0-9_\.]*\z/, message: "only allows letters, numbers, underscores, and dots" }
   validate :validate_username
 end

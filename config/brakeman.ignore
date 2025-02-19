@@ -1,0 +1,39 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "a0101fcb2672c3391cf7f07217cc9777fd465f1a67fd51d93eadbcf9fd512c28",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/spots/show.html.erb",
+      "line": 11,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(\"External Info\", Spot.find(params[:id]).web_link)",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "SpotsController",
+          "method": "show",
+          "line": 30,
+          "file": "app/controllers/spots_controller.rb",
+          "rendered": {
+            "name": "spots/show",
+            "file": "app/views/spots/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "spots/show"
+      },
+      "user_input": "Spot.find(params[:id]).web_link",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    }
+  ],
+  "brakeman_version": "7.0.0"
+}
