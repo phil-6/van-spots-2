@@ -1,52 +1,11 @@
 <div class="bg-blue" id="spots">
   <div class="container main-page-cards text-center">
-  <h1>Latest Spots</h1>
+    <h1>Latest Spots</h1>
     <div class="card-deck">
       <% @spots.each do |spot| %>
-        <div class="card spot-card <%= spot.spot_type %> rating-<%= spot.average_rating.floor %>">
-
-          <div class="card-header text-center" >
-            <% if user_signed_in? %>
-              <a href="/spots/<%= spot.id %>">
-            <% end %>
-            <h2 class="card-title"><%= spot.name %></h2>
-            <h5>
-              <% if spot.spot_type == 'free_spot' %>Free Spot
-              <% elsif spot.spot_type == 'paid_spot' %>Paid Spot
-              <% elsif spot.spot_type == 'campsite' %>Campsite
-              <% elsif spot.spot_type == 'mtb_spot' %>MTB Spot
-              <% elsif spot.spot_type == 'climbing_spot' %>Climbing Spot
-              <% elsif spot.spot_type == 'kayaking_spot' %>Kayaking Spot
-              <% elsif spot.spot_type == 'surf_spot' %>Surf Spot
-              <% elsif spot.spot_type == 'bad_spot' %>Bad Spot
-              <% else %>Spot Type Unknown<% end %> - <%= spot.average_rating %>/10
-            </h5>
-            <% if user_signed_in? %>
-              </a>
-            <% end %>
-          </div>
-
-          <div class="card-body">
-            <h6>Created By: <% if user_signed_in? %><a href="/users/<%= spot.user.id %>"> <% end %><%= spot.user.username %><% if user_signed_in? %></a><% end %> on <%= spot.created_at.strftime('%b %d, %Y') %></h6>
-            <%= spot.description %>
-          </div>
-
-          <div class="more-info">
-            <div class="card-footer text-center">
-              <% if user_signed_in? %>
-                <%= link_to "More Info", spot_path(spot) %>
-              <% else %>
-                <%= link_to new_user_session_path, :class => 'nav-link' do%>
-                  Login for More Info
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-
-        </div>
+        <%= render partial: 'spots/card', locals: { spot: } %>
       <% end %>
     </div>
     <a class="js-scroll-trigger" href="#reviews"><i class="fas fa-5x fa-chevron-down"></i></a>
-
   </div>
 </div>

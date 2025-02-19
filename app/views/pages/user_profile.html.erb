@@ -20,49 +20,9 @@
         <h3 class="text-center"><%= @user.username %> hasn't added any spots yet</h3>
       <% else %>
         <h3 class="text-center"><%= @user.username %>'s Spots</h3>
-        <div class="card-columns">
+        <div class="card-deck spots">
           <% @spots.each do |spot| %>
-            <div class="card <%= spot.spot_type %> rating-<%= spot.average_rating.floor %>">
-              <% if user_signed_in? %>
-                <a href="/spots/<%= spot.id %>">
-              <% end %>
-
-              <div class="card-header text-center">
-                <h2 class="card-title"><%= spot.name %></h2>
-                <h5>
-                  <% if spot.spot_type == 'free_spot' %>Free Spot
-                  <% elsif spot.spot_type == 'paid_spot' %>Paid Spot
-                  <% elsif spot.spot_type == 'campsite' %>Campsite
-                  <% elsif spot.spot_type == 'mtb_spot' %>MTB Spot
-                  <% elsif spot.spot_type == 'climbing_spot' %>Climbing Spot
-                  <% elsif spot.spot_type == 'kayaking_spot' %>Kayaking Spot
-                  <% elsif spot.spot_type == 'surf_spot' %>Surf Spot
-                  <% elsif spot.spot_type == 'bad_spot' %>Bad Spot
-                  <% else %>Spot Type Unknown
-                  <% end %> - <%= spot.average_rating %>/10
-                </h5>
-              </div>
-
-              <% if user_signed_in? %>
-                </a>
-              <% end %>
-
-              <div class="card-body">
-                <h6>Created On: <%= spot.created_at.strftime('%b %d, %Y') %></h6>
-                <%= spot.description %>
-              </div>
-
-              <div class="more-info card-footer text-center">
-                <% if user_signed_in? %>
-                  <%= link_to "More Info", spot_path(spot) %>
-                <% else %>
-                  <%= link_to new_user_session_path, :class => 'nav-link' do %>
-                    Login for More Info
-                  <% end %>
-                <% end %>
-              </div>
-
-            </div>
+            <%= render partial: 'spots/card', locals: { spot: } %>
           <% end %>
         </div>
       <% end %>
@@ -72,32 +32,10 @@
       <% else %>
         <h3 class="text-center"><%= @user.username %>'s Reviews</h3>
 
-        <div class="card-columns">
+        <div class="card-deck">
           <% @ratings.each do |rating| %>
-            <div class="card <%= rating.spot.spot_type %>">
-
-              <div class="card-header text-center">
-                <h2 class="card-title"><%= rating.spot.name %></h2>
-                <%= rating.spot.description %>
-              </div>
-
-              <div class="card-body">
-                <h6>Created On: <%= rating.created_at.strftime('%b %d, %Y') %></h6>
-                <h3 class="text-center"><%= rating.score %>/10</h3>
-                <h4><%= rating.review_title %></h4>
-                <%= rating.review_body %>
-              </div>
-
-              <div class="more-info card-footer text-center">
-                <% if user_signed_in? %>
-                  <%= link_to "More Info", spot_path(rating.spot) %>
-                <% else %>
-                  <%= link_to new_user_session_path, :class => 'nav-link' do %>
-                    Login for More Info
-                  <% end %>
-                <% end %>
-              </div>
-            </div>
+            <% next unless rating.spot.present? %>
+            <%= render partial: 'ratings/card', locals: { rating: } %>
           <% end %>
         </div>
       <% end %>
