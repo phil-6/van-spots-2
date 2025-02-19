@@ -30,7 +30,7 @@ body {
       text-transform: uppercase;
     }
 
-    .nav > li > a, .nav > li > a:focus {
+    .nav > li > a, .nav > li > a:focus, .nav > li > form > button {
       text-transform: uppercase;
       font-weight: 700;
       font-size: 13px;
@@ -44,7 +44,7 @@ body {
       color: $lighterink;
     }
 
-    .nav > li > a:focus:hover, .nav > li > a:hover {
+    .nav > li > a:focus:hover, .nav > li > a:hover, , .nav > li > form > button:hover {
       color: $darkerorange;
     }
 

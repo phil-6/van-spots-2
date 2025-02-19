@@ -48,7 +48,7 @@
             <%# end %>
           </li>
           <li class="nav-item">
-            <%= link_to destroy_user_session_path, method: :delete, :class => 'nav-link' do %>
+            <%= button_to  destroy_user_session_path, method: :delete, class: 'nav-link' do %>
               Logout <i class="fas fa-sign-out-alt"></i>
             <% end %>
           </li>
@@ -56,13 +56,13 @@
           <li class="nav-item">
             <%#= link_to 'Sign up', '#signup', 'data-toggle' => 'modal', :class => 'nav-link' %>
 
-            <%= link_to new_user_registration_path, :class => 'nav-link' do %>
+            <%= link_to new_user_registration_path, class: 'nav-link' do %>
               Sign Up <i class="fas fa-user-plus"></i>
             <% end %>
           </li>
           <%#= render 'devise/registrations/signup_modal' %>
           <li class="nav-item">
-            <%= link_to new_user_session_path, :class => 'nav-link' do %>
+            <%= link_to new_user_session_path, class: 'nav-link' do %>
               Login <i class="fas fa-sign-in-alt"></i>
             <% end %>
           </li>
