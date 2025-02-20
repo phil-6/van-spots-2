@@ -14,15 +14,22 @@ export default class extends Controller {
         this.newMarker = null;
         this.newMarkerInfoWindow = null;
         this.icons = JSON.parse(this.mapTarget.dataset.mapIcons);
+        this.singleSpot = (typeof this.mapTarget.dataset.mapSpot != "undefined");
+        if (this.singleSpot) this.spot = JSON.parse(this.mapTarget.dataset.mapSpot);
 
         this.initMap();
     }
 
     async initMap() {
         const {Map} = await google.maps.importLibrary("maps");
+        let center = this.singleSpot ? {lat: parseFloat(this.spot.latitude), lng: parseFloat(this.spot.longitude)} : {
+            lat: 51.6,
+            lng: -4.15
+        };
+        let zoom = this.singleSpot ? 15 : 12;
         this.map = new Map(this.mapTarget, {
-            center: {lat: 51.6, lng: -4.15},
-            zoom: 12,
+            center: center,
+            zoom: zoom,
             mapTypeControl: true,
             mapTypeControlOptions: {
                 position: google.maps.ControlPosition.LEFT_BOTTOM,
@@ -46,6 +53,7 @@ export default class extends Controller {
             .then((response) => response.json())
             .then((data) => {
                 data.forEach((item) => {
+                    // console.log(item);
                     const position = new google.maps.LatLng(item.latitude, item.longitude);
                     const marker = new google.maps.Marker({
                         map: this.map,
@@ -92,7 +100,7 @@ export default class extends Controller {
                     userMarker.addListener("click", () => {
                         userInfoWindow.open(this.map, userMarker);
                     });
-                    this.map.setCenter(this.userPos);
+                    if (!this.singleSpot) this.map.setCenter(this.userPos);
                 },
                 () => {
                     this.handleLocationError(true, this.infoWindow, this.map.getCenter());
@@ -105,7 +113,6 @@ export default class extends Controller {
         google.maps.event.addListener(this.map, "click", (event) => {
             this.placeNewMarker(event.latLng);
         });
-
     }
 
     async initMarkerCluster() {

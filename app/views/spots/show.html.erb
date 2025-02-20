@@ -1,3 +1,14 @@
+<% content_for :head do %>
+  <script>
+      (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+          key: "<%= ENV['MAPS_API_KEY'] %>",
+          v: "weekly",
+          // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
+          // Add other bootstrap parameters as needed, using camel case.
+      });
+  </script>
+<% end %>
+
 <div id="page-top" class="show-spot">
   <div class="spot-header text-center <%= @spot.spot_type %>">
     <%= render partial: 'layouts/alerts' %>
@@ -15,19 +26,7 @@
         @spot.latitude.to_s + ',' + @spot.longitude.to_s, target: :_blank, class: 'btn btn-sm btn-secondary' %>
     </h6>
 
-    <h6>
-      Type: <strong>
-      <% if @spot.spot_type == 'free_spot' %>Free Spot
-      <% elsif @spot.spot_type == 'paid_spot' %>Paid Spot
-      <% elsif @spot.spot_type == 'campsite' %>Campsite
-      <% elsif @spot.spot_type == 'mtb_spot' %>MTB Spot
-      <% elsif @spot.spot_type == 'climbing_spot' %>Climbing Spot
-      <% elsif @spot.spot_type == 'kayaking_spot' %>Kayaking Spot
-      <% elsif @spot.spot_type == 'surf_spot' %>Surf Spot
-      <% elsif @spot.spot_type == 'bad_spot' %>Bad Spot
-      <% else %>Spot Type Unknown
-      <% end %></strong>
-    </h6>
+    <h6>Type: <strong><% @spot.spot_type.humanize %></strong></h6>
 
     <!--Edit if Owner or Admin-->
     <!-- Rate Spot button-->
@@ -60,8 +59,20 @@
 
 
   <!--Map Div-->
-  <div id="map" class="spot-map"></div>
-
+  <div id="map" class="spot-map" data-controller="map" data-map-target="map"
+       data-map-spot="<%= @spot.to_json %>"
+       data-map-icons='{
+       "free_spot": "<%= image_url('map-marker-purple.png') %>",
+       "paid_spot": "<%= image_url('map-marker-orange.png') %>",
+       "campsite": "<%= image_url('map-marker-darker-orange.png') %>",
+       "mtb_spot": "<%= image_url('map-marker-darker-green.png') %>",
+       "climbing_spot": "<%= image_url('map-marker-green.png') %>",
+       "kayaking_spot": "<%= image_url('map-marker-darker-blue.png') %>",
+       "surf_spot": "<%= image_url('map-marker-sky-blue.png') %>",
+       "bad_spot": "<%= image_url('map-marker-red.png') %>",
+       "user": "<%= image_url('map-marker-ink.png') %>",
+       "new": "<%= image_url('map-marker-lighter-ink.png') %>"
+     }'></div>
 
   <!--Reviews-->
   <div id="reviews" class="ninety-container">
@@ -122,255 +133,3 @@
   </div>
 
 </div> <!-- End Content .show-spot -->
-
-
-<!--Map Script-->
-<script>
-    var map;
-    //creates a new blank array for all the listing markers
-    var markers = [];
-    var markerCluster;
-    var userPos;
-    var infoWindow;
-
-
-    function initMap() {
-        // Constructor create a new map, only center and zoom are required.
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: <%= @spot.latitude %>, lng: <%= @spot.longitude %>},
-            zoom: 15,
-            mapTypeControl: true,
-            mapTypeControlOptions: {
-                position: google.maps.ControlPosition.LEFT_BOTTOM
-            },
-            streetViewControl: false,
-            fullscreenControl: false,
-            // fullscreenControlOptions: {
-            //     position: google.maps.ControlPosition.RIGHT_BOTTOM
-            // },
-            scaleControl: true,
-            mapTypeId: 'terrain',
-
-        });
-
-        /**
-         ==========
-         Icons
-         ==========
-         */
-
-        var iconBase = '/assets/map-marker-';
-        var icons = {
-            'free_spot': {
-                icon: iconBase + 'purple.png'
-            },
-            'paid_spot': {
-                icon: iconBase + 'orange.png'
-            },
-            'campsite': {
-                icon: iconBase + 'darker-orange.png'
-            },
-            'mtb_spot': {
-                icon: iconBase + 'darker-green.png'
-            },
-            'climbing_spot': {
-                icon: iconBase + 'green.png'
-            },
-            'kayaking_spot': {
-                icon: iconBase + 'darker-blue.png'
-            },
-            'surf_spot': {
-                icon: iconBase + 'sky-blue.png'
-            },
-            'bad_spot': {
-                icon: iconBase + 'red.png'
-            },
-            'user': {
-                icon: iconBase + 'ink.png'
-            },
-            'new': {
-                icon: iconBase + 'lighter-ink.png'
-            }
-        };
-
-        /**
-         ==========
-         Create Markers
-         ==========
-         */
-            // Create Markers array and populate it from API
-            // +<%= @spot.id %>
-        var apiUrl = ('/api/spots/');
-        infoWindow = new google.maps.InfoWindow();
-
-        $.getJSON(apiUrl, function (json1) {
-            $.each(json1, function (key, data) {
-                var position = new google.maps.LatLng(data.latitude, data.longitude);
-
-                var marker = new google.maps.Marker({
-                    map: map,
-                    position: position,
-                    id: data.id,
-                    name: data.name,
-                    description: data.description,
-                    average_rating: data.average_rating,
-                    type: data.spot_type,
-                    icon: icons[data.spot_type].icon,
-                    animation: google.maps.Animation.DROP
-                });
-
-                // Push the marker to our array of markers.
-                markers.push(marker);
-                // Create an onclick event to open an infowindow at each marker.
-                marker.addListener('click', function () {
-                    populateInfoWindow(this, infoWindow);
-                });
-            });
-        });
-
-
-        // Create the DIV to hold the control and call the CenterControl()
-        // constructor
-        // passing in this DIV.
-        // var mapFilterControlsDiv = document.createElement('div');
-        // var mapFilterControls = new MapFilterControls(mapFilterControlsDiv, map);
-        // mapFilterControlsDiv.index = 1;
-//            mapFilterControlsDiv.style['padding-top'] = '10px';
-//         map.controls[google.maps.ControlPosition.LEFT_CENTER];
-        // Add a marker clusterer to manage the markers.
-        markerCluster = new MarkerClusterer(map, [],
-            {
-                imagePath: '/assets/map-marker-mc',
-                gridSize: 40,
-                minimumClusterSize: 2
-            });
-        /**
-         ==========
-         Show User Location
-         ==========
-         */
-        /** WILL NOT WORK UNTIL CONNECTION IS HTTPS */
-            //User loctation
-        var userInfoWindow = new google.maps.InfoWindow({map: map});
-        // Try HTML5 geolocation.
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                userPos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                userMarker = new google.maps.Marker({
-                    position: userPos,
-                    animation: google.maps.Animation.DROP,
-                    icon: icons['user'].icon,
-                    map: map
-                });
-                userInfoWindow.setContent('<div class="text-center"><strong>You are here.</strong><br />' + userPos.lat + ', ' + userPos.lng + '</div>');
-                userMarker.addListener('click', function () {
-                    userInfoWindow.open(map, userMarker)
-                });
-            }, function () {
-                handleLocationError(true, infoWindow, map.getCenter());
-            });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-        }
-        // google.maps.event.addListener( marker, 'click', function ( event ) {
-        //     document.getElementById( "maps_latitude" ).value = event.latLng.lat();
-        //     document.getElementById( "maps_longitude" ).value = event.latLng.lng();
-        // } );
-
-
-        /**
-         ===============
-         End of Init Map
-         ===============
-         */
-    }
-
-
-    /*Location Error Handling*/
-    function handleLocationError(browserHasGeolocation, infoWindow, userPos) {
-        infoWindow.setPosition(userPos);
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-    }
-
-    /**
-     ==========
-     Info Windows
-     ==========
-     */
-    /**
-     *  This function populates the infowindow when the marker is clicked. We'll only allow
-     * one infowindow which will open at the marker that is clicked, and populate based
-     * on that markers position.
-     */
-    function populateInfoWindow(marker, infowindow) {
-        // Check to make sure the infowindow is not already opened on this marker.
-        if (infowindow.marker !== marker) {
-            //add information to info window
-            var marker_type;
-            if (marker.type === 'free_spot') {
-                marker_type = 'Free Spot';
-            } else if (marker.type === 'paid_spot') {
-                marker_type = 'Paid Spot';
-            } else if (marker.type === 'campsite') {
-                marker_type = 'Campsite';
-            } else if (marker.type === 'mtb_spot') {
-                marker_type = 'MTB Spot';
-            } else if (marker.type === 'climbing_spot') {
-                marker_type = 'Climbing Spot';
-            } else if (marker.type === 'kayaking_spot') {
-                marker_type = 'Kayaking Spot';
-            } else if (marker.type === 'surf_spot') {
-                marker_type = 'Surf Spot';
-            } else if (marker.type === 'bad_spot') {
-                marker_type = 'Bad Spot';
-            } else {
-                marker_type = 'Unknown Spot Type';
-            }
-            var infoWindowContent = '<div id="content">' +
-                '<h2 id="infoWindowHeading" class="infoWindowHeading">' +
-                '<a href="/spots/' + marker.id + '">' + marker.name + '</a></h2>' +
-                '<div id="infoWindowContent" class="infoWindowContent">' +
-                '<h6>' + marker_type + ' - ' + marker.average_rating + '/10</h6>' +
-                '<p>' + marker.description + '</p>' +
-                '<p><a class="btn btn-sm btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination='
-                + marker.position.lat() + ','
-                + marker.position.lng() +
-                '">Directions</a>' +
-                '</p>' +
-                '</div>' +
-                '</div>';
-            infowindow.marker = marker;
-            infowindow.setContent(infoWindowContent);
-            infowindow.open(map, marker);
-            // Make sure the marker property is cleared if the infowindow is closed.
-            infowindow.addListener('closeclick', function () {
-                infowindow.marker = null;
-            });
-        }
-    }
-
-</script>
-
-
-
-
-
-<!--Marker Clusterer-->
-<!--<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>-->
-<!--<script src="/assets/markerClusterer/markerclusterer.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer.js"></script>-->
-
-
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['MAPS_API_KEY'] %>&callback=initMap">
-</script>
-
-
-<!-- Plugin JavaScript -->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>-->
