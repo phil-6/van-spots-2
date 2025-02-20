@@ -5,17 +5,7 @@
     <% end %>
 
     <h2 class="card-title"><%= spot.name %></h2>
-    <h5>
-      <% if spot.spot_type == 'free_spot' %>Free Spot
-      <% elsif spot.spot_type == 'paid_spot' %>Paid Spot
-      <% elsif spot.spot_type == 'campsite' %>Campsite
-      <% elsif spot.spot_type == 'mtb_spot' %>MTB Spot
-      <% elsif spot.spot_type == 'climbing_spot' %>Climbing Spot
-      <% elsif spot.spot_type == 'kayaking_spot' %>Kayaking Spot
-      <% elsif spot.spot_type == 'surf_spot' %>Surf Spot
-      <% elsif spot.spot_type == 'bad_spot' %>Bad Spot
-      <% else %>Spot Type Unknown<% end %> - <%= spot.average_rating %>/10
-    </h5>
+    <h5><%= spot.spot_type.humanize %> - <%= spot.average_rating %>/10</h5>
 
     <% if user_signed_in? %>
       </a>
