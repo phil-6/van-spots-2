@@ -1,6 +1,21 @@
 <% content_for :head do %>
   <script>
-      (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+      (g => {
+          var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window;
+          b = b[c] || (b[c] = {});
+          var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => {
+              await (a = m.createElement("script"));
+              e.set("libraries", [...r] + "");
+              for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+              e.set("callback", c + ".maps." + q);
+              a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+              d[q] = f;
+              a.onerror = () => h = n(Error(p + " could not load."));
+              a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+              m.head.append(a)
+          }));
+          d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+      })({
           key: "<%= ENV['MAPS_API_KEY'] %>",
           v: "weekly",
           // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
@@ -26,7 +41,8 @@
         @spot.latitude.to_s + ',' + @spot.longitude.to_s, target: :_blank, class: 'btn btn-sm btn-secondary' %>
     </h6>
 
-    <h6>Type: <strong><% @spot.spot_type.humanize %></strong></h6>
+    <h6>Type: <strong>
+      <% @spot.spot_type.humanize %></strong></h6>
 
     <!--Edit if Owner or Admin-->
     <!-- Rate Spot button-->
@@ -39,7 +55,7 @@
     <% if @spot.ratings.map(&:review_title).any?(&:present?) || @spot.ratings.map(&:review_body).any?(&:present?) %>
       <div class="button group text-center">
         <!--<a href="#map-title" class="btn btn-sm btn-info">Go to Map</a>-->
-        <a href="#reviews" class="btn btn-sm btn-info">Go to Reviews</a>
+        <a href="#spot-reviews" class="btn btn-sm btn-info">Go to Reviews</a>
       </div>
     <% end %>
 
@@ -56,7 +72,6 @@
       </h3>
     </div>
   </div> <!--End of .spot-header-->
-
 
   <!--Map Div-->
   <div id="map" class="spot-map" data-controller="map" data-map-target="map"
@@ -75,7 +90,7 @@
      }'></div>
 
   <!--Reviews-->
-  <div id="reviews" class="ninety-container">
+  <div id="spot-reviews" class="ninety-container">
     <% if @spot.ratings.map(&:review_title).any?(&:present?) || @spot.ratings.map(&:review_body).any?(&:present?) %>
       <h3 class="text-center">Reviews
         <a href="#page-top" title="Page Top" class="float-right">
@@ -84,43 +99,12 @@
       </h3>
       <div class="card-columns">
         <% @spot.ratings.reverse.each do |rating| %>
-          <% if rating.review_title? %>
-            <div class="card
-              <% if rating.score < 3 %>border-danger
-              <% elsif rating.score < 6 %>border-warning
-              <% elsif rating.score < 8 %>border-info
-              <% else %>border-success
-              <% end %>">
-
-              <div class="card-header
-                <% if rating.score < 3 %>border-danger alert-danger
-                <% elsif rating.score < 6 %>border-warning alert-warning
-                <% elsif rating.score < 8 %>border-info alert-info
-                <% else %>border-success alert-success
-                <% end %>">
-                <h5 class="text-center"> <%= rating.score %>/10</h5>
-              </div>
-
-              <div class="card-body">
-                <h4 class="card-title text-center"><%= rating.review_title %></h4>
-                <p class="card-text"><%= rating.review_body %></p>
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">by <a href="/users/<%= rating.user.id %>"><%= rating.user.username %></a>
-                  on <%= rating.created_at.strftime('%b %d, %Y') %></small>
-              </div>
-
-              <%# if current_user.id == rating.user_id%>
-              <!--                      <div class="text-center">-->
-              <%#= button_to "Edit Review", edit_spot_rating_url(@spot, rating), method: :get, class: 'btn btn-primary' %>
-              <!-- TODO add delete option -->
-              <!--                      </div>-->
-              <%# end %>
-            </div>
-          <% end %>
+          <% next unless rating.review_title? %>
+          <%= render partial: 'ratings/card', locals: { rating: } %>
         <% end %>
       </div>
+    <% else %>
+      <h4 class="text-center">No reviews for this spot.</h4>
     <% end %>
   </div>
 
