@@ -54,16 +54,7 @@
                 data-card-filter-target="filterable">
 
                 <td><%= spot.name %></td>
-                <%# TODO: Use .humanize here %>
-                <td><% if spot.spot_type == 'free_spot' %>Free Spot
-                  <% elsif spot.spot_type == 'paid_spot' %>Paid Spot
-                  <% elsif spot.spot_type == 'campsite' %>Campsite
-                  <% elsif spot.spot_type == 'mtb_spot' %>MTB Spot
-                  <% elsif spot.spot_type == 'climbing_spot' %>Climbing Spot
-                  <% elsif spot.spot_type == 'kayaking_spot' %>Kayaking Spot
-                  <% elsif spot.spot_type == 'surf_spot' %>Surf Spot
-                  <% elsif spot.spot_type == 'bad_spot' %>Bad Spot
-                  <% else %>Spot Type Unknown<% end %></td>
+                <td><% spot.spot_type.humanize  %></td>
                 <td><%= spot.average_rating %>/10</td>
                 <td>from <%= spot.ratings.size %> scores</td>
                 <td><%= spot.description.truncate(60) %></td>
