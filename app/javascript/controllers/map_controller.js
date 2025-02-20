@@ -1,6 +1,6 @@
 // app/javascript/controllers/map_controller.js
-import { Controller } from "@hotwired/stimulus";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import {Controller} from "@hotwired/stimulus";
+import {MarkerClusterer} from "@googlemaps/markerclusterer";
 
 export default class extends Controller {
     static targets = ["map"];
@@ -15,26 +15,13 @@ export default class extends Controller {
         this.newMarkerInfoWindow = null;
         this.icons = JSON.parse(this.mapTarget.dataset.mapIcons);
 
-        this.loadGoogleMapsAPI();
+        this.initMap();
     }
 
-    loadGoogleMapsAPI() {
-        if (typeof google === "undefined") {
-            const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=<%= ENV['MAPS_API_KEY'] %>&callback=initMap`;
-            script.async = true;
-            script.defer = true;
-            window.initMap = this.initMap.bind(this);
-            document.head.appendChild(script);
-        } else {
-            this.initMap();
-        }
-    }
-
-    initMap() {
-        console.log('initMap() start')
-        this.map = new google.maps.Map(this.mapTarget, {
-            center: { lat: 51.6, lng: -4.15 },
+    async initMap() {
+        const {Map} = await google.maps.importLibrary("maps");
+        this.map = new Map(this.mapTarget, {
+            center: {lat: 51.6, lng: -4.15},
             zoom: 12,
             mapTypeControl: true,
             mapTypeControlOptions: {
@@ -47,13 +34,13 @@ export default class extends Controller {
             mapId: "a2b97596989ec0c3"
         });
 
-        this.infoWindow = new google.maps.InfoWindow();
-        this.newMarkerInfoWindow = new google.maps.InfoWindow({ map: this.map });
+        if (!(this.map instanceof google.maps.Map)) {
+            console.error("Map initialization failed.");
+            return;
+        }
 
-        this.markerCluster = new MarkerClusterer({
-            map: this.map,
-            markers: []
-        });
+        this.infoWindow = new google.maps.InfoWindow();
+        this.newMarkerInfoWindow = new google.maps.InfoWindow({map: this.map});
 
         fetch("/api/spots")
             .then((response) => response.json())
@@ -73,12 +60,11 @@ export default class extends Controller {
                     });
 
                     this.markers.push(marker);
-                    this.markerCluster.addMarker(marker);
-
                     marker.addListener("click", () => {
                         this.populateInfoWindow(marker, this.infoWindow);
                     });
                 });
+                this.initMarkerCluster();
             });
 
         const mapFilterControlsDiv = document.createElement("div");
@@ -99,7 +85,7 @@ export default class extends Controller {
                         icon: this.icons["user"],
                         map: this.map,
                     });
-                    const userInfoWindow = new google.maps.InfoWindow({ map: this.map });
+                    const userInfoWindow = new google.maps.InfoWindow({map: this.map});
                     userInfoWindow.setContent(
                         `<div class="text-center"><strong>You are here.</strong><br />${this.userPos.lat}, ${this.userPos.lng}</div>`
                     );
@@ -119,6 +105,18 @@ export default class extends Controller {
         google.maps.event.addListener(this.map, "click", (event) => {
             this.placeNewMarker(event.latLng);
         });
+
+    }
+
+    async initMarkerCluster() {
+        if (this.markers.length > 0) {
+            this.markerCluster = new MarkerClusterer({
+                map: this.map,
+                markers: this.markers
+            });
+        } else {
+            console.warn("No markers available for clustering.");
+        }
     }
 
     handleLocationError(browserHasGeolocation, infoWindow, userPos) {
