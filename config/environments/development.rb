@@ -41,11 +41,11 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
   config.action_mailer.smtp_settings = {
-    user_name:      "apikey",
-    password:       ENV["SENDGRID_API_KEY"],
+    user_name:      Rails.application.credentials.smtp.username,
+    password:       Rails.application.credentials.smtp.password,
     domain:         "vanspots.uk",
-    address:        "smtp.sendgrid.net",
-    port:            "587",
+    address:        "mail.smtp2go.com",
+    port:           "2525",
     authentication: :plain,
     enable_starttls_auto: true
   }
