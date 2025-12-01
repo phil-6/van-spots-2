@@ -46,7 +46,7 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 # Pagy for pagination [https://ddnexus.github.io/pagy/]
-gem "pagy", "~> 9"
+gem "pagy", "~> 43"
 
 # Use the Bootstrap CSS framework [https://getbootstrap.com/]
 gem "bootstrap", "~> 5"
