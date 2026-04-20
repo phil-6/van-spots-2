@@ -12,8 +12,20 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  private
+  def generate_api_token
+    @token = @user.generate_api_token!
+    flash[:api_token] = @token
+    flash[:notice] = "API token generated for #{@user.username}. Copy it now - it won't be shown again."
+    redirect_to "/users/#{@user.id}"
+  end
 
+  def revoke_api_token
+    @user.revoke_api_token!
+    flash[:notice] = "API token revoked for #{@user.username}."
+    redirect_to "/users/#{@user.id}"
+  end
+
+  private
 
   def set_user
     @user = User.find(params[:id])

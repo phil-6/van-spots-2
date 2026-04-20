@@ -20,7 +20,12 @@ Rails.application.routes.draw do
   get "/api/spots/:id",   to: "spots#api_show"
 
   namespace :admin do
-    resources :users
+    resources :users do
+      member do
+        post :generate_api_token
+        delete :revoke_api_token
+      end
+    end
   end
   post "sign_out_all/action", to: "admin/users#sign_out_all"
 

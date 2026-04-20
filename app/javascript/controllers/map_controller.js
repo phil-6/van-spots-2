@@ -49,7 +49,10 @@ export default class extends Controller {
         this.infoWindow = new google.maps.InfoWindow();
         this.newMarkerInfoWindow = new google.maps.InfoWindow({map: this.map});
 
-        fetch("/api/spots")
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        fetch("/api/spots", {
+            headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {}
+        })
             .then((response) => response.json())
             .then((data) => {
                 data.forEach((item) => {

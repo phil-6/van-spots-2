@@ -13,6 +13,46 @@
       <h4><%= @user.username %> has added <strong><%= @spotcount %></strong> spots and
         <strong><%= @ratings.count %></strong> ratings</h4>
       <hr/>
+
+      <% if current_user&.admin? %>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">API Token</h5>
+          </div>
+          <div class="card-body">
+            <% if flash[:api_token] %>
+              <div class="alert alert-warning">
+                <strong>Copy this token now - it won't be shown again:</strong>
+                <code class="d-block mt-2 p-2 bg-dark text-light rounded user-select-all" style="word-break: break-all;">
+                  <%= flash[:api_token] %>
+                </code>
+              </div>
+            <% end %>
+
+            <% if @user.has_api_token? %>
+              <p>This user has an active API token.</p>
+              <div class="d-flex gap-2">
+                <%= button_to "Regenerate Token",
+                    generate_api_token_admin_user_path(@user),
+                    method: :post,
+                    class: "btn btn-sm btn-warning",
+                    data: { turbo_confirm: "This will invalidate the existing token. Continue?" } %>
+                <%= button_to "Revoke Token",
+                    revoke_api_token_admin_user_path(@user),
+                    method: :delete,
+                    class: "btn btn-sm btn-danger",
+                    data: { turbo_confirm: "This will permanently revoke this user's API access. Continue?" } %>
+              </div>
+            <% else %>
+              <p>No API token has been generated for this user.</p>
+              <%= button_to "Generate API Token",
+                  generate_api_token_admin_user_path(@user),
+                  method: :post,
+                  class: "btn btn-sm btn-primary" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     </div>
 
     <div class="ninety-container">

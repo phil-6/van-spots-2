@@ -14,7 +14,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should not be able to create a username with someone else's username" do
-    user = User.new(username: "test-one", email: "test2@example.com", description: "test", password: "password")
+    user = User.new(username: "test_one", email: "test2@example.com", description: "test", password: "password")
     assert_not user.save
     assert_includes user.errors[:username], "has already been taken"
   end

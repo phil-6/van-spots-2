@@ -1,5 +1,9 @@
 class SpotsController < ApplicationController
+  include ApiAuthenticatable
+
   skip_before_action :authenticate_user!, only: [ :index, :api_index, :api_show ]
+  skip_before_action :verify_authenticity_token, only: [ :api_index, :api_show ]
+  before_action :authenticate_api_request!, only: [ :api_index, :api_show ]
   before_action :set_spot, only: [ :show, :api_show, :update, :destroy ]
   before_action :require_permission, only: [ :edit, :update, :destroy ]
 

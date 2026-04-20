@@ -14,6 +14,30 @@ class User < ApplicationRecord
   has_many :spots, foreign_key: :user_id
   has_many :ratings, foreign_key: :user_id
 
+  # API token methods
+  def generate_api_token!
+    token = SecureRandom.hex(32)
+    update!(api_token_digest: BCrypt::Password.create(token))
+    token
+  end
+
+  def revoke_api_token!
+    update!(api_token_digest: nil)
+  end
+
+  def has_api_token?
+    api_token_digest.present?
+  end
+
+  def self.authenticate_by_api_token(token)
+    return nil if token.blank?
+    find_each do |user|
+      next unless user.api_token_digest.present?
+      return user if BCrypt::Password.new(user.api_token_digest) == token
+    end
+    nil
+  end
+
   # instead of deleting, indicate the user requested a delete & timestamp it
   def soft_delete
     update_attribute(:deleted_at, Time.current)
