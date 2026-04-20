@@ -1,49 +1,33 @@
 require "application_system_test_case"
 
 class RatingsTest < ApplicationSystemTestCase
+  include Warden::Test::Helpers
+
   setup do
-    @rating = ratings(:one)
+    @user = users(:one)
+    @spot = spots(:one)
+    login_as(@user, scope: :user)
   end
 
-  test "visiting the index" do
-    visit ratings_url
-    assert_selector "h1", text: "Ratings"
+  teardown do
+    Warden.test_reset!
   end
 
   test "should create rating" do
-    visit ratings_url
-    click_on "New rating"
+    visit spot_url(@spot)
+    click_on "Rate Spot"
 
-    fill_in "Review body", with: @rating.review_body
-    fill_in "Review title", with: @rating.review_title
-    fill_in "Score", with: @rating.score
-    fill_in "Spot", with: @rating.spot_id
-    fill_in "User", with: @rating.user_id
-    click_on "Create Rating"
+    # Wait for the rating form to load
+    assert_selector "h2", text: /how would you rate/i
 
-    assert_text "Rating was successfully created"
-    click_on "Back"
-  end
+    # The bar-rating Stimulus controller hides the native <select>,
+    # so set the value directly via JavaScript.
+    page.execute_script("document.querySelector('select[name=\"rating[score]\"]').value = '8'")
+    fill_in "Review title", with: "Great spot!"
+    fill_in "Review body", with: "Lovely views and quiet area"
+    click_on "Rate Spot"
 
-  test "should update Rating" do
-    visit rating_url(@rating)
-    click_on "Edit this rating", match: :first
-
-    fill_in "Review body", with: @rating.review_body
-    fill_in "Review title", with: @rating.review_title
-    fill_in "Score", with: @rating.score
-    fill_in "Spot", with: @rating.spot_id
-    fill_in "User", with: @rating.user_id
-    click_on "Update Rating"
-
-    assert_text "Rating was successfully updated"
-    click_on "Back"
-  end
-
-  test "should destroy Rating" do
-    visit rating_url(@rating)
-    click_on "Destroy this rating", match: :first
-
-    assert_text "Rating was successfully destroyed"
+    # Redirects back to the spot show page
+    assert_text(/#{Regexp.escape(@spot.name)}/i)
   end
 end

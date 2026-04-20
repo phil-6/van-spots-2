@@ -5,18 +5,24 @@ one:
   name: MyString
   description: MyText
   spot_type: campsite
-  web_link: MyString
+  web_link: https://example.com
+  latitude: 51.605411
+  longitude: -3.983570
 
 two:
   user: two
   name: MyString
   description: MyText
   spot_type: campsite
-  web_link: MyString
+  web_link: https://example.com
+  latitude: 52.123456
+  longitude: -4.567890
 
 three:
   user: one
   name: MyString3
   description: MyText3
   spot_type: campsite
-  web_link: MyString3
+  web_link: https://example.com/spot3
+  latitude: 50.987654
+  longitude: -3.123456
