@@ -1,9 +1,9 @@
 class SpotsController < ApplicationController
   include ApiAuthenticatable
 
-  skip_before_action :authenticate_user!, only: [ :index, :api_index, :api_show ]
-  skip_before_action :verify_authenticity_token, only: [ :api_index, :api_show ]
-  before_action :authenticate_api_request!, only: [ :api_index, :api_show ]
+  skip_before_action :authenticate_user!, only: [ :index, :api_index, :api_show, :api_create ]
+  skip_before_action :verify_authenticity_token, only: [ :api_index, :api_show, :api_create ]
+  before_action :authenticate_api_request!, only: [ :api_index, :api_show, :api_create ]
   before_action :set_spot, only: [ :show, :api_show, :update, :destroy ]
   before_action :require_permission, only: [ :edit, :update, :destroy ]
 
@@ -37,6 +37,30 @@ class SpotsController < ApplicationController
   def api_show
     @spot
     render json: @spot.as_json(methods: [ :average_rating ])
+  end
+
+  # POST /api/spots
+  def api_create
+    @spot = api_user.spots.new(api_spot_params)
+
+    if @spot.save
+      render json: @spot.as_json(methods: [ :average_rating ]), status: :created
+    else
+      render json: {
+        error: "Validation failed",
+        errors: @spot.errors.as_json,
+        required_fields: {
+          name: "string",
+          description: "string",
+          spot_type: "one of: #{Spot::VALID_SPOT_TYPES.join(', ')}",
+          latitude: "decimal",
+          longitude: "decimal"
+        },
+        optional_fields: {
+          web_link: "string (URL)"
+        }
+      }, status: :unprocessable_entity
+    end
   end
 
   # GET /spots/new
@@ -90,6 +114,10 @@ class SpotsController < ApplicationController
   def spot_params
     # whitelist params
     params.require(:spot).permit(:name, :spot_type, :description, :latitude, :longitude, :web_link)
+  end
+
+  def api_spot_params
+    params.permit(:name, :spot_type, :description, :latitude, :longitude, :web_link)
   end
 
   def set_spot

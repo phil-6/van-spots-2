@@ -220,4 +220,84 @@ class ApiIntegrationTest < ActionDispatch::IntegrationTest
     delete revoke_api_token_admin_user_path(users(:two))
     assert_redirected_to root_path
   end
+
+  # ── POST /api/spots ─────────────────────────────────────────────────
+
+  test "api_create creates a spot with valid params" do
+    token = @user.generate_api_token!
+    assert_difference "Spot.count", 1 do
+      post "/api/spots",
+        params: { name: "API Spot", description: "Created via API", spot_type: "free_spot",
+                  latitude: 51.5, longitude: -3.9, web_link: "https://example.com" },
+        headers: { "Authorization" => "Bearer #{token}" }
+    end
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_equal "API Spot", json["name"]
+    assert_equal "free_spot", json["spot_type"]
+    assert_equal @user.id, json["user_id"]
+    assert json.key?("average_rating")
+  end
+
+  test "api_create creates a spot without optional web_link" do
+    token = @user.generate_api_token!
+    assert_difference "Spot.count", 1 do
+      post "/api/spots",
+        params: { name: "No Link Spot", description: "No web link", spot_type: "campsite",
+                  latitude: 52.0, longitude: -4.0 },
+        headers: { "Authorization" => "Bearer #{token}" }
+    end
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_nil json["web_link"]
+  end
+
+  test "api_create returns validation errors with required fields when params missing" do
+    token = @user.generate_api_token!
+    assert_no_difference "Spot.count" do
+      post "/api/spots",
+        params: {},
+        headers: { "Authorization" => "Bearer #{token}" }
+    end
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert_equal "Validation failed", json["error"]
+    assert json["errors"].key?("name")
+    assert json["errors"].key?("spot_type")
+    assert json["errors"].key?("description")
+    assert json["errors"].key?("latitude")
+    assert json["errors"].key?("longitude")
+    assert json.key?("required_fields")
+    assert json.key?("optional_fields")
+  end
+
+  test "api_create returns error for invalid spot_type" do
+    token = @user.generate_api_token!
+    post "/api/spots",
+      params: { name: "Bad Type", description: "Invalid type", spot_type: "invalid",
+                latitude: 51.5, longitude: -3.9 },
+      headers: { "Authorization" => "Bearer #{token}" }
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert json["errors"].key?("spot_type")
+  end
+
+  test "api_create requires Bearer token" do
+    assert_no_difference "Spot.count" do
+      post "/api/spots",
+        params: { name: "No Auth", description: "Should fail", spot_type: "free_spot",
+                  latitude: 51.5, longitude: -3.9 }
+    end
+    assert_response :unauthorized
+  end
+
+  test "api_create rejects invalid Bearer token" do
+    assert_no_difference "Spot.count" do
+      post "/api/spots",
+        params: { name: "Bad Token", description: "Should fail", spot_type: "free_spot",
+                  latitude: 51.5, longitude: -3.9 },
+        headers: { "Authorization" => "Bearer badtoken" }
+    end
+    assert_response :unauthorized
+  end
 end

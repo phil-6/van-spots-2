@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get "/map",             to: "pages#map"
   get "/api/spots",       to: "spots#api_index"
   get "/api/spots/:id",   to: "spots#api_show"
+  post "/api/spots",      to: "spots#api_create"
 
   namespace :admin do
     resources :users do

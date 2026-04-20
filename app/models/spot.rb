@@ -1,4 +1,6 @@
 class Spot < ApplicationRecord
+  VALID_SPOT_TYPES = %w[free_spot paid_spot campsite mtb_spot climbing_spot kayaking_spot surf_spot bad_spot].freeze
+
   has_many :ratings, dependent: :destroy, foreign_key: :spot_id
   belongs_to :user
 
@@ -14,6 +16,6 @@ class Spot < ApplicationRecord
                         :latitude,
                         :longitude
   validates :spot_type, inclusion: {
-    in: %w[free_spot paid_spot campsite mtb_spot climbing_spot kayaking_spot surf_spot bad_spot],
+    in: VALID_SPOT_TYPES,
     message: "%{value} is not a valid spot type" }
 end

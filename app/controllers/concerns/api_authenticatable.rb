@@ -23,10 +23,14 @@ module ApiAuthenticatable
       return
     end
 
-    user = User.authenticate_by_api_token(token)
-    if user.nil?
+    @api_user = User.authenticate_by_api_token(token)
+    if @api_user.nil?
       render json: { error: "Invalid API token" }, status: :unauthorized
     end
+  end
+
+  def api_user
+    @api_user || current_user
   end
 
   def authenticate_same_origin!
