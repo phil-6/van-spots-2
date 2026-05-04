@@ -373,7 +373,7 @@ DEPENDENCIES
   jbuilder
   mutex_m
   pagy (~> 9)
-  pg (~> 1.1)
+  pg (~> 1.6)
   propshaft
   puma (>= 5.0)
   rails (~> 8.1)
