@@ -148,6 +148,7 @@ export default class extends Controller {
                 climbing_spot: "Climbing Spot",
                 kayaking_spot: "Kayaking Spot",
                 surf_spot: "Surf Spot",
+                paragliding_spot: "Paragliding Spot",
                 bad_spot: "Bad Spot",
             };
             const markerType = markerTypeMap[marker.type] || "Unknown Spot Type";

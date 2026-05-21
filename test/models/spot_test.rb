@@ -28,6 +28,12 @@ class SpotTest < ActiveSupport::TestCase
     assert_not spot.save
   end
 
+  test "should be able to create a paragliding spot" do
+    spot = Spot.new(name: "Test", user_id: users(:one).id, description: "Test",
+                    spot_type: "paragliding_spot", latitude: 51.612152, longitude: -3.966312)
+    assert spot.save
+  end
+
   test "should not be able to create a spot without a latitude or longitude " do
     spot = Spot.new(name: "Test", description: "Test", spot_type: "free_spot")
     assert_not spot.save

@@ -23,6 +23,10 @@ $bluegrad: linear-gradient(to bottom right,$darkerblue,$bluecardgradend);
 $bluegradhoriz: linear-gradient(to right,$darkerblue,$bluecardgradend);
 $bluegradheader: linear-gradient(to bottom right,$blueheadergradstart,$blueheadergradend);
 
+$skygrad: linear-gradient(to bottom right, $lighterblue, $skyblue);
+$skygradhoriz: linear-gradient(to right, $lighterblue, $skyblue);
+$skygradheader: linear-gradient(to bottom right, $skyblue, $lighterblue);
+
 //$orange: #FF8822;
 //$darkerorange: #EE6600;
 //$orangecardgradend: #f69259;
