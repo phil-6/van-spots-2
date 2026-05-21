@@ -100,6 +100,15 @@
       background: $bluegrad;
     }
 
+    &.paragliding_spot {
+      border-color: $lighterblue;
+    }
+
+    &.paragliding_spot .card-header {
+      background-color: $lighterblue;
+      background: $skygrad;
+    }
+
     &.bad_spot {
       border-color: red;
     }

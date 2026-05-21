@@ -1,5 +1,5 @@
 class Spot < ApplicationRecord
-  VALID_SPOT_TYPES = %w[free_spot paid_spot campsite mtb_spot climbing_spot kayaking_spot surf_spot bad_spot].freeze
+  VALID_SPOT_TYPES = %w[free_spot paid_spot campsite mtb_spot climbing_spot kayaking_spot surf_spot paragliding_spot bad_spot].freeze
 
   has_many :ratings, dependent: :destroy, foreign_key: :spot_id
   belongs_to :user
